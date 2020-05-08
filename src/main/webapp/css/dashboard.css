@@ -1,0 +1,54 @@
+#sidebar-wrapper {
+    min-height: 100vh;
+    margin-left: -15rem;
+    transition: margin .25s ease-out;
+    background: linear-gradient(to bottom right, rgb(15, 32, 39), rgb(32, 58, 67), rgb(44, 83, 100)) !important;
+}
+
+#sidebar-wrapper .list-group {
+    width: 15rem;
+}
+
+#sidebar-wrapper .list-group .list-group-item {
+    background: rgba(0,0,0,0) !important;
+    color: #fff;
+}
+
+#sidebar-wrapper .list-group .list-group-item:hover {
+    background: rgba(255,255,255,1) !important;
+    color: #000;
+}
+
+#page-content-wrapper {
+    min-width: 100vw;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    margin-left: 0;
+}
+
+.card{
+    border-radius: 15px;
+}
+
+.card-body{
+    font-size: 100px;
+}
+.card-body .card-title {
+    font-size: 60px
+}
+
+@media (min-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: 0;
+    }
+
+    #page-content-wrapper {
+        min-width: 0;
+        width: 100%;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: -15rem;
+    }
+}

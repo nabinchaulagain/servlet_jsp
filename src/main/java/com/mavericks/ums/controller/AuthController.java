@@ -86,7 +86,7 @@ public class AuthController extends HttpServlet {
             else{
                 boolean wasUserCreated = dao.createUser(user);
                 if(wasUserCreated){
-                    resp.sendRedirect("/");
+                    resp.sendRedirect("/ums/dashboard");
                 }
                 return;
             }
@@ -107,6 +107,7 @@ public class AuthController extends HttpServlet {
             req.getParameter("username"),
             req.getParameter("password")
         );
-        resp.getWriter().println(user.toString());
+        //resp.getWriter().println(user.toString());
+        resp.sendRedirect("/ums/dashboard");
     }
 }
