@@ -100,7 +100,15 @@ public class UserDao {
         }
         return null;
     }
-    private User getUserFromResultSet(ResultSet resSet) throws SQLException{
+    public int getTotalUsers() throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM user");
+        ResultSet resSet = stmt.executeQuery();
+        resSet.next();
+        int result;
+        result = resSet.getInt(1);
+        return result;
+    }
+     private User getUserFromResultSet(ResultSet resSet) throws SQLException{
          User user = new User(
                 resSet.getInt("id"),
                 resSet.getString("username"),
@@ -113,13 +121,5 @@ public class UserDao {
                 resSet.getLong("phone_num")
          );
          return user;
-    }
-    public int getTotalUsers() throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM user");
-        ResultSet resSet = stmt.executeQuery();
-        resSet.next();
-        int result;
-        result = resSet.getInt(1);
-        return result;
     }
 }

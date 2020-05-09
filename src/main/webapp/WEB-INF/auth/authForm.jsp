@@ -9,10 +9,8 @@
     <body>
         <%@include file="../navbar.jsp" %>
         <form class="container col-xl-5 col-sm-7 col-11 p-3 bg-light authForm" method="POST">
-            
             <h3 class="text-center">${formType}</h3>
             <div class="col-9 mx-auto">
-                
                 <div class="form-group">
                     <label>Username</label>
                     <input type="text" name="username" class='form-control ${(errors.containsKey("username"))?"is-invalid":""}' value="${initialValues.getUsername()}" required>

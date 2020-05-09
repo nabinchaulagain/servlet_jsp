@@ -23,7 +23,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author nabin
  */
-@WebServlet(name = "AuthController", urlPatterns = {"/login", "/register"})
+@WebServlet(name = "AuthController", urlPatterns = {"/login", "/register","/logout"})
 public class AuthController extends HttpServlet {
     private final UserDao dao = new UserDao();
     
@@ -37,6 +37,7 @@ public class AuthController extends HttpServlet {
                     break;
                 case "/register":
                     showRegisterPage(req, resp);
+                    break;
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -54,6 +55,9 @@ public class AuthController extends HttpServlet {
                     break;
                 case "/register":
                     register(req, resp);
+                    break;
+                case "/logout":
+                    logout(req,resp);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -82,7 +86,7 @@ public class AuthController extends HttpServlet {
             user.setId(id);
             HttpSession session = req.getSession();
             session.setAttribute("user", user);
-            resp.sendRedirect(req.getContextPath()+"/dashboard");
+            resp.sendRedirect(req.getContextPath());
             return;
         }
         req.setAttribute("initialValues", user);
@@ -107,11 +111,21 @@ public class AuthController extends HttpServlet {
             user = dao.getUserByUsermame(user.getUsername());
             HttpSession session = req.getSession();
             session.setAttribute("user", user);
-            resp.sendRedirect(req.getContextPath()+"/dashboard");
+            if(user.isAdmin()){
+                resp.sendRedirect(req.getContextPath()+"/admin");
+            }
+            else{
+                resp.sendRedirect(req.getContextPath());
+            }
             return;
         }
         req.setAttribute("initialValues", user);
         req.setAttribute("errors", errors);
         showLoginPage(req, resp);
+    }
+    private void logout(HttpServletRequest req,HttpServletResponse resp) throws ServletException,IOException{
+        HttpSession session = req.getSession(false);
+        session.invalidate();
+        resp.sendRedirect(req.getContextPath());
     }
 }

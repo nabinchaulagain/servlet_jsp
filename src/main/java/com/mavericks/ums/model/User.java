@@ -122,10 +122,13 @@ public class User {
     public void setPhoneNum(long phoneNum) {
         this.phoneNum = phoneNum;
     }
+    
+    public boolean isAdmin(){
+        return this.role.equals("admin");
+    }
 
     @Override
     public String toString() {
         return "User{" + "id=" + id + ", username=" + username + ", password=" + password + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName + ", role=" + role + ", joinedDate=" + joinedDate + ", phoneNum=" + phoneNum + '}';
     }
-    
 }

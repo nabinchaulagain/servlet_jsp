@@ -1,9 +1,4 @@
-<%-- 
-    Document   : header
-    Created on : May 8, 2020, 1:46:30 PM
-    Author     : nabin
---%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <nav class="navbar navbar-expand-lg navbar-dark main-nav">
     <a class="navbar-brand" href="#">UMS</a>
@@ -12,17 +7,36 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Profile
-                </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                </div>
-            </li>
+            <c:if test='${user != null}'>
+                <li class="nav-item dropdown">
+                   
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        ${user.getUsername()}
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Profile</a>
+                        <c:if test="${user.isAdmin()}">
+                            <a class="dropdown-item" href="${pageContext.request.contextPath}/admin">Admin Dashboard</a>
+                        </c:if>
+                       <form method="POST" action="${pageContext.request.contextPath}/logout">
+                           <input type="submit" value="Logout" style="display:none" id="logoutNavItem"> 
+                           <label class="dropdown-item" for="logoutNavItem" style="cursor:pointer">Logout</label>
+                       </form>
+                    </div>
+                </li>
+            </c:if>
+            <c:if test='${user == null}'>
+                <li class="nav-item">
+                    <a class="nav-link" href="${pageContext.request.contextPath}/register">
+                        Sign up
+                    </a>
+                </li> 
+                <li class="nav-item">
+                    <a class="nav-link" href="${pageContext.request.contextPath}/login">
+                        Login
+                    </a>
+                </li> 
+            </c:if>
         </ul>
     </div>
 </nav>
