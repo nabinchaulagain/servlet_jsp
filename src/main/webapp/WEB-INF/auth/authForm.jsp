@@ -22,7 +22,7 @@
                 </div>   
                 <div class="form-group">
                     <label>Password</label>
-                    <input type="password" name="password" class="form-control ${errors.containsKey("password")?"is-invalid":""}" value="${initialValues.getPassword()}" required>
+                    <input type="password" name="password" class="form-control ${errors.containsKey("password")?"is-invalid":""}"  value="${initialValues.getPassword()}" required>
                     <c:if test='${errors.containsKey("password")}'>
                             <small class="text-danger">${errors.get("password")}</small>
                     </c:if>

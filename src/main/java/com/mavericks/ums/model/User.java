@@ -18,7 +18,7 @@ public class User {
     private String firstName;
     private String lastName;
     private String role = "user";
-    private Date joinedDate; 
+    private Date joinedDate;
     private long phoneNum;
 
     public User(int id, String username, String password, String email,String firstName,String lastName,String role, Date joinedDate, long phoneNum) {
