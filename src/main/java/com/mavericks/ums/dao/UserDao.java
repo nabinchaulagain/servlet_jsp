@@ -114,4 +114,12 @@ public class UserDao {
          );
          return user;
     }
+    public int getTotalUsers() throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM user");
+        ResultSet resSet = stmt.executeQuery();
+        resSet.next();
+        int result;
+        result = resSet.getInt(1);
+        return result;
+    }
 }

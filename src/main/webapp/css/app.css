@@ -8,9 +8,25 @@ and open the template in the editor.
     Author     : nabin
 */
 body{
-    background:#b8b8b8;
+    /*background: linear-gradient(to bottom right, #bbb, #ddd);*/
+    background: linear-gradient(to bottom right, rgb(142, 158, 171), rgb(238, 242, 243));
+    min-height: 100vh;
 }
 .authForm{
     margin-top:7vh;
     border-radius: 15px;
+}
+.main-nav{
+    background: linear-gradient(to bottom right, rgb(15, 32, 39), rgb(32, 58, 67), rgb(44, 83, 100)) !important;
+}
+
+.dropdown-item:hover {
+    background: rgba(255,255,255,1);  
+}
+.dropdown-item{
+    background: rgba(0,0,0,0) ;
+    color: #fff;
+}
+.dropdown-menu {
+    background: linear-gradient(to bottom right, rgb(15, 32, 39), rgb(32, 58, 67), rgb(44, 83, 100)) !important;
 }

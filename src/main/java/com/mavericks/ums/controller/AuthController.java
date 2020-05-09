@@ -82,7 +82,7 @@ public class AuthController extends HttpServlet {
             user.setId(id);
             HttpSession session = req.getSession();
             session.setAttribute("user", user);
-            resp.sendRedirect(req.getContextPath()+"/test.jsp");
+            resp.sendRedirect(req.getContextPath()+"/dashboard");
             return;
         }
         req.setAttribute("initialValues", user);
@@ -107,7 +107,7 @@ public class AuthController extends HttpServlet {
             user = dao.getUserByUsermame(user.getUsername());
             HttpSession session = req.getSession();
             session.setAttribute("user", user);
-            resp.sendRedirect(req.getContextPath()+"/test.jsp");
+            resp.sendRedirect(req.getContextPath()+"/dashboard");
             return;
         }
         req.setAttribute("initialValues", user);
