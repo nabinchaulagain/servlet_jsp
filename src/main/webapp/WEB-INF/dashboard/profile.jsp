@@ -14,7 +14,7 @@
             <div class="container-fluid">
                 <h1 class="display-1 my-4">${user.getUsername()}</h1>
                 
-                <table class="table table-borderless">
+                <table class="table table-borderless profile-details-table">
                     <tbody>
                         <tr>
                             <th scope="row">First Name</th>
@@ -43,9 +43,9 @@
                     </tbody>
                 </table>
                         
-                <h1 class="my-4">History:</h1>
-                <table class="table my-5">
-                    <thead class="thead-dark">
+                <h1 class="mt-5">History:</h1>
+                <table class="table my-5 table-hover">
+                    <thead>
                         <tr>
                             <th>History Id</th>
                             <th>Action</th>
@@ -54,6 +54,30 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Created</td>
+                            <td>Something goes here</td>
+                            <td>2020/20/23</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>Created</td>
+                            <td>Something goes here</td>
+                            <td>2020/20/23</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>Created</td>
+                            <td>Something goes here</td>
+                            <td>2020/20/23</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>Created</td>
+                            <td>Something goes here</td>
+                            <td>2020/20/23</td>
+                        </tr>
                         <tr>
                             <td>1</td>
                             <td>Created</td>

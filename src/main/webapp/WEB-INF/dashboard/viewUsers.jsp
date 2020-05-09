@@ -14,8 +14,8 @@
             <div class="container-fluid">
                 <h1 class="my-4">Users</h1>
                 
-                <table class="table my-5">
-                    <thead class="thead-dark">
+                <table class="table my-5 table-hover">
+                    <thead>
                         <tr>
                             <th>Id</th>
                             <th>Username</th>
@@ -24,18 +24,20 @@
                             <th>Email</th>
                             <th>Role</th>
                             <th>Joined Date</th>
+                            <th>Edit User</th>
                         </tr>
                     </thead>
                     <tbody>
                         <c:forEach items="${allusers}" var="user">
                             <tr>      
                                 <td>${user.getId()}</td>
-                                <td><a href="/ums/profile?id=<c:out value='${user.getId()}' />">${user.getUsername()}</a></td>
+                                <td><a href="${pageContext.request.contextPath}/profile?id=<c:out value='${user.getId()}' />">${user.getUsername()}</a></td>
                                 <td>${user.getFirstName()}</td>
                                 <td>${user.getLastName()}</td>
                                 <td>${user.getEmail()}</td>
                                 <td>${user.getRole()}</td>
                                 <td>${user.getJoinedDate()}</td>
+                                <td><a href="">edit</a> <a href="">delete</a></td>
                             </tr>
                         </c:forEach>
                     </tbody>

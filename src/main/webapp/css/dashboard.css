@@ -38,6 +38,15 @@
     font-size: 60px
 }
 
+.table thead {
+    background: linear-gradient(to bottom right, rgb(15, 32, 39), rgb(32, 58, 67), rgb(44, 83, 100)) !important;
+    color: #fff;
+}
+
+.profile-details-table{
+    width: 55% !important;
+}
+
 @media (min-width: 768px) {
     #sidebar-wrapper {
         margin-left: 0;

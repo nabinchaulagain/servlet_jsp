@@ -7,15 +7,15 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto">
-            <c:if test='${user != null}'>
+            <c:if test='${sessionUser != null}'>
                 <li class="nav-item dropdown">
                    
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        ${user.getUsername()}
+                        ${sessionUser.getUsername()}
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Profile</a>
-                        <c:if test="${user.isAdmin()}">
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/profile?id=<c:out value='${sessionUser.getId()}' />">My Profile</a>
+                        <c:if test="${sessionUser.isAdmin()}">
                             <a class="dropdown-item" href="${pageContext.request.contextPath}/admin">Admin Dashboard</a>
                         </c:if>
                        <form method="POST" action="${pageContext.request.contextPath}/logout">
@@ -25,7 +25,7 @@
                     </div>
                 </li>
             </c:if>
-            <c:if test='${user == null}'>
+            <c:if test='${sessionUser == null}'>
                 <li class="nav-item">
                     <a class="nav-link" href="${pageContext.request.contextPath}/register">
                         Sign up

@@ -28,8 +28,8 @@ public class AdminController extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
-        User user = (User)session.getAttribute("user");
-        if(user == null || !user.isAdmin()){
+        User sessionUser = (User)session.getAttribute("sessionUser");
+        if(sessionUser == null || !sessionUser.isAdmin()){
             resp.sendRedirect(req.getContextPath()+"/login");
             return;
         }

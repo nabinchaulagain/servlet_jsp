@@ -1,5 +1,5 @@
 <%@page import="com.mavericks.ums.model.User"%>
-<% User user = (User) session.getAttribute("user"); %>
+<% User sessionUser = (User) session.getAttribute("sessionUser"); %>
 <title>${pageTitle}</title> 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"> 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/app.css">

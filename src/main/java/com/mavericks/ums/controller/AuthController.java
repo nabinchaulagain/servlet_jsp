@@ -85,7 +85,7 @@ public class AuthController extends HttpServlet {
             int id = dao.createUser(user);
             user.setId(id);
             HttpSession session = req.getSession();
-            session.setAttribute("user", user);
+            session.setAttribute("sessionUser", user);
             resp.sendRedirect(req.getContextPath());
             return;
         }
@@ -110,7 +110,7 @@ public class AuthController extends HttpServlet {
         if (errors.isEmpty()) {
             user = dao.getUserByUsermame(user.getUsername());
             HttpSession session = req.getSession();
-            session.setAttribute("user", user);
+            session.setAttribute("sessionUser", user);
             if(user.isAdmin()){
                 resp.sendRedirect(req.getContextPath()+"/admin");
             }
