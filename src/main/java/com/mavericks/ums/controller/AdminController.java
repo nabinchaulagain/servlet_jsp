@@ -21,7 +21,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Acer
  */
-@WebServlet(name = "AdminController", urlPatterns = {"/admin"})
+@WebServlet(name = "AdminController", urlPatterns = {"/admin", "/admin/users", "/profile"})
 public class AdminController extends HttpServlet {
     private UserDao dao = new UserDao();
 
@@ -52,6 +52,12 @@ public class AdminController extends HttpServlet {
                 case "/admin":
                     showDashboardPage(req, resp);
                     break;
+                case "/admin/users":
+                    showViewUserPage(req, resp);
+                    break;
+                case "/profile":
+                    showProfilePage(req, resp);
+                    break;
             }
         }
         catch(SQLException ex){
@@ -63,6 +69,22 @@ public class AdminController extends HttpServlet {
         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/dashboard/dashboard.jsp");
         req.setAttribute("pageTitle", "Dashboard");
         req.setAttribute("totalUser", dao.getTotalUsers());
+        dispatcher.forward(req, resp);
+    }
+
+    private void showViewUserPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/dashboard/viewUsers.jsp");
+        req.setAttribute("pageTitle", "View Users");
+        req.setAttribute("allusers", dao.getUserList());
+        dispatcher.forward(req, resp);
+    }
+
+    private void showProfilePage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
+        int id = Integer.parseInt(req.getParameter("id"));
+        User u = dao.getUserById(id);
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/dashboard/profile.jsp");
+        req.setAttribute("pageTitle", u.getUsername());
+        req.setAttribute("user", u);
         dispatcher.forward(req, resp);
     }
 }

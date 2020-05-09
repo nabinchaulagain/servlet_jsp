@@ -2,14 +2,14 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <%@include file="../bootstrap.jsp" %>
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/dashboard.css">
-    </head>
-    <body>
-        <%@include file="../navbar.jsp" %>
-        <%@include file="./sidebar.jsp" %>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <%@include file="../bootstrap.jsp" %>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/dashboard.css">
+</head>
+<body>
+    <%@include file="../navbar.jsp" %>
+    <%@include file="./sidebar.jsp" %>
         <div id="page-content-wrapper">
             <div class="container-fluid">
                 <h1 class="my-4">Dashboard</h1>
