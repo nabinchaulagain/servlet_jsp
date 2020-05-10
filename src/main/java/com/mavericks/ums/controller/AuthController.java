@@ -6,7 +6,9 @@
 package com.mavericks.ums.controller;
 
 import com.mavericks.ums.dao.UserDao;
+import com.mavericks.ums.dao.UserHistoryDao;
 import com.mavericks.ums.model.User;
+import com.mavericks.ums.model.UserHistory;
 import com.mavericks.ums.util.AuthValidator;
 import com.mavericks.ums.util.Toast;
 import java.io.IOException;
@@ -26,7 +28,8 @@ import javax.servlet.http.HttpSession;
  */
 @WebServlet(name = "AuthController", urlPatterns = {"/login", "/register","/logout"})
 public class AuthController extends HttpServlet {
-    private final UserDao dao = new UserDao();
+    private final UserDao userDao = new UserDao();
+    private UserHistoryDao userHistoryDao = new UserHistoryDao();
     
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -83,10 +86,11 @@ public class AuthController extends HttpServlet {
                 req.getParameter("lastName"),
                 Long.parseLong(req.getParameter("phoneNum"))
         );
-        Map<String, String> errors = AuthValidator.validateForRegister(user, dao);
+        Map<String, String> errors = AuthValidator.validateForRegister(user, userDao);
         if (errors.isEmpty()) {
-            int id = dao.createUser(user);
+            int id = userDao.createUser(user);
             user.setId(id);
+            userHistoryDao.createUserHistory(user,"Registered","");
             HttpSession session = req.getSession();
             session.setAttribute("sessionUser", user);
             Toast toast = new Toast("Account created successfully", Toast.MSG_TYPE_SUCCESS);
@@ -111,11 +115,12 @@ public class AuthController extends HttpServlet {
                 req.getParameter("username"),
                 req.getParameter("password")
         );
-        Map<String, String> errors = AuthValidator.validateForLogin(user, dao);
+        Map<String, String> errors = AuthValidator.validateForLogin(user, userDao);
         if (errors.isEmpty()) {
-            user = dao.getUserByUsermame(user.getUsername());
+            user = userDao.getUserByUsermame(user.getUsername());
             HttpSession session = req.getSession();
             session.setAttribute("sessionUser", user);
+            userHistoryDao.createUserHistory(user,"Logged in","");
             Toast toast = new Toast("You are now logged in as "+user.getUsername(), Toast.MSG_TYPE_SUCCESS);
             toast.show(req);
             if(user.isAdmin()){

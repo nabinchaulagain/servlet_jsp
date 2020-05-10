@@ -109,17 +109,17 @@ public class UserDao {
         return result;
     }
      private User getUserFromResultSet(ResultSet resSet) throws SQLException{
-         User user = new User(
-                resSet.getInt("id"),
-                resSet.getString("username"),
-                resSet.getString("password"),
-                resSet.getString("email"),
-                resSet.getString("first_name"),
-                resSet.getString("last_name"),
-                resSet.getString("role"),
-                resSet.getDate("joined_date"),
-                resSet.getLong("phone_num")
-         );
-         return user;
+        User user = new User(
+            resSet.getInt("id"),
+            resSet.getString("username"),
+            resSet.getString("password"),
+            resSet.getString("email"),
+            resSet.getString("first_name"),
+            resSet.getString("last_name"),
+            resSet.getString("role"),
+            resSet.getDate("joined_date"),
+            resSet.getLong("phone_num")
+        );
+        return user;
     }
 }

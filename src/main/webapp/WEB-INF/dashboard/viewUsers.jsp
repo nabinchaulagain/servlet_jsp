@@ -32,11 +32,15 @@
                                 <td>${user.getEmail()}</td>
                                 <td>${user.getRole()}</td>
                                 <td>${user.getJoinedDate()}</td>
+<<<<<<< HEAD
                                 <td>
                                     <a href="#" class="btn btn-sm btn-success"><i class="fa fa-eye"></i> View</a>
                                     <a href="#" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i> Edit</a>
                                     <a href="#" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
                                 </td>
+=======
+                                <td><a href="">edit</a> <a href="${pageContext.request.contextPath}/admin/users/delete?id=<c:out value='${user.getId()}' />">delete</a></td>
+>>>>>>> 58d327230cc7243b987e6f0a0a96a8298870953e
                             </tr>
                         </c:forEach>
                     </tbody>
