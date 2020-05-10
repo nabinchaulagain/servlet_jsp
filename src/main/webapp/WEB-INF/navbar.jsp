@@ -40,3 +40,10 @@
         </ul>
     </div>
 </nav>
+<c:if test="${toast != null}">
+    <div id="toast" class="alert ${toast.getType()}">
+        ${toast.getMessage()}
+        <%  session.removeAttribute("toast");%>
+    </div>
+</c:if>
+

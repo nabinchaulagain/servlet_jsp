@@ -8,6 +8,7 @@ package com.mavericks.ums.controller;
 import com.mavericks.ums.dao.UserDao;
 import com.mavericks.ums.model.User;
 import com.mavericks.ums.util.AuthValidator;
+import com.mavericks.ums.util.Toast;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Map;
@@ -38,6 +39,8 @@ public class AuthController extends HttpServlet {
                 case "/register":
                     showRegisterPage(req, resp);
                     break;
+                default:
+                    super.doGet(req, resp);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -86,6 +89,8 @@ public class AuthController extends HttpServlet {
             user.setId(id);
             HttpSession session = req.getSession();
             session.setAttribute("sessionUser", user);
+            Toast toast = new Toast("Account created successfully", Toast.MSG_TYPE_SUCCESS);
+            toast.show(req);
             resp.sendRedirect(req.getContextPath());
             return;
         }
@@ -111,6 +116,8 @@ public class AuthController extends HttpServlet {
             user = dao.getUserByUsermame(user.getUsername());
             HttpSession session = req.getSession();
             session.setAttribute("sessionUser", user);
+            Toast toast = new Toast("You are now logged in as "+user.getUsername(), Toast.MSG_TYPE_SUCCESS);
+            toast.show(req);
             if(user.isAdmin()){
                 resp.sendRedirect(req.getContextPath()+"/admin");
             }
@@ -126,6 +133,8 @@ public class AuthController extends HttpServlet {
     private void logout(HttpServletRequest req,HttpServletResponse resp) throws ServletException,IOException{
         HttpSession session = req.getSession(false);
         session.invalidate();
+        Toast toast = new Toast("You are now logged out", Toast.MSG_TYPE_SUCCESS);
+        toast.show(req);
         resp.sendRedirect(req.getContextPath());
     }
 }

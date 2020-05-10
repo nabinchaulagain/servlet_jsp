@@ -30,3 +30,44 @@ body{
 .dropdown-menu {
     background: linear-gradient(to bottom right, rgb(15, 32, 39), rgb(32, 58, 67), rgb(44, 83, 100)) !important;
 }
+#toast{
+    font-size: 90%;
+    position:fixed;
+    width:auto;
+    right:2%;
+    color:white;
+    bottom:-10%;
+    animation: fadein 1s,fadeout 3s 1s; 
+}
+@keyframes fadein {
+    from {
+        bottom: -10%;
+        opacity: 0;
+    }
+    to {
+        bottom: 15px;
+        opacity: 1;
+    }
+}
+
+@keyframes fadeout {
+    0% {
+        bottom: 15px;
+        opacity: 1;
+    }
+    67%{
+        bottom:15px;
+        opacity:1;
+    }
+    100% {
+        bottom: -10%;
+        opacity: 0;
+    }
+}
+
+.toast-success{
+    background: #5ed663;
+}
+.toast-error{
+    background: #ff6969;
+}

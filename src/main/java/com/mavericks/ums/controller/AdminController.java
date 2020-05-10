@@ -27,7 +27,7 @@ public class AdminController extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession(false);
+        HttpSession session = req.getSession();
         User sessionUser = (User)session.getAttribute("sessionUser");
         if(sessionUser == null || !sessionUser.isAdmin()){
             resp.sendRedirect(req.getContextPath()+"/login");
@@ -42,10 +42,8 @@ public class AdminController extends HttpServlet {
         }
     }
     
-    
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-        System.out.println("do Get still called");
         String path = req.getServletPath();
         try{
             switch(path) {
