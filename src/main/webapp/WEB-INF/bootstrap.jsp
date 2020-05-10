@@ -1,4 +1,3 @@
-<%@page import="com.mavericks.ums.util.FlashMessage"%>
 <%@page import="com.mavericks.ums.model.User"%>
 <title>${pageTitle}</title> 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"> 

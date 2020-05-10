@@ -54,48 +54,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Created</td>
-                            <td>Something goes here</td>
-                            <td>2020/20/23</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Created</td>
-                            <td>Something goes here</td>
-                            <td>2020/20/23</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Created</td>
-                            <td>Something goes here</td>
-                            <td>2020/20/23</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Created</td>
-                            <td>Something goes here</td>
-                            <td>2020/20/23</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Created</td>
-                            <td>Something goes here</td>
-                            <td>2020/20/23</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Created</td>
-                            <td>Something goes here</td>
-                            <td>2020/20/23</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Created</td>
-                            <td>Something goes here</td>
-                            <td>2020/20/23</td>
-                        </tr>
+                        <c:forEach items="${allHistories}" var="history">
+                            <tr>
+                                <td>${history.getId()}</td>
+                                <td>${history.getAction()}</td>
+                                <td>${history.getDetail()}</td>
+                                <td>${history.getDateAndTime()}</td>
+                            </tr>
+                        </c:forEach>
                     </tbody>
                 </table>
             </div>

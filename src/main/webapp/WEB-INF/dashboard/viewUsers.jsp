@@ -37,7 +37,7 @@
                                 <td>${user.getEmail()}</td>
                                 <td>${user.getRole()}</td>
                                 <td>${user.getJoinedDate()}</td>
-                                <td><a href="">edit</a> <a href="">delete</a></td>
+                                <td><a href="">edit</a> <a href="${pageContext.request.contextPath}/admin/users/delete?id=<c:out value='${user.getId()}' />">delete</a></td>
                             </tr>
                         </c:forEach>
                     </tbody>
