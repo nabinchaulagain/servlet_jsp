@@ -11,11 +11,13 @@
 
 #sidebar-wrapper .list-group .list-group-item {
     background: rgba(0,0,0,0) !important;
+    opacity:0.5;
     color: #fff;
 }
 
 #sidebar-wrapper .list-group .list-group-item:hover {
     background: rgba(255,255,255,1) !important;
+    opacity:1;
     color: #000;
 }
 
@@ -25,6 +27,11 @@
 
 #wrapper.toggled #sidebar-wrapper {
     margin-left: 0;
+}
+
+#sidebar-wrapper .selected{
+    opacity:1 !important;   
+    border-left: 3px solid #7d9bff;
 }
 
 .card{
@@ -37,10 +44,8 @@
 .card-body .card-title {
     font-size: 60px
 }
-
-.table thead {
-    background: linear-gradient(to bottom right, rgb(15, 32, 39), rgb(32, 58, 67), rgb(44, 83, 100)) !important;
-    color: #fff;
+.table-bordered td,.table-bordered th{
+    border: 1px solid grey !important;
 }
 
 .profile-details-table{

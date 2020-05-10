@@ -34,6 +34,7 @@ public class AdminController extends HttpServlet {
             return;
         }
         String method = req.getMethod();
+        req.setAttribute("path", req.getServletPath());
         if(method.equals("GET")){
             doGet(req,resp);
         }

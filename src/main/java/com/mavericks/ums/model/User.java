@@ -126,6 +126,9 @@ public class User {
     public boolean isAdmin(){
         return this.role.equals("admin");
     }
+    public String getFullName(){
+        return this.getFirstName()+ " "+ this.getLastName();
+    }
 
     @Override
     public String toString() {

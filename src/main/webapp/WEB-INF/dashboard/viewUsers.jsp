@@ -13,37 +13,35 @@
         <div id="page-content-wrapper">
             <div class="container-fluid">
                 <h1 class="my-4">Users</h1>
-                
-                <table class="table my-5 table-hover">
+                <table class="table my-5 table-md table-hover table-bordered ">
                     <thead>
                         <tr>
-                            <th>Id</th>
                             <th>Username</th>
-                            <th>First name</th>
-                            <th>Last name</th>
+                            <th>Name</th>
                             <th>Email</th>
                             <th>Role</th>
                             <th>Joined Date</th>
-                            <th>Edit User</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <c:forEach items="${allusers}" var="user">
                             <tr>      
-                                <td>${user.getId()}</td>
-                                <td><a href="${pageContext.request.contextPath}/profile?id=<c:out value='${user.getId()}' />">${user.getUsername()}</a></td>
-                                <td>${user.getFirstName()}</td>
-                                <td>${user.getLastName()}</td>
+                                <td>${user.getUsername()}</td>
+                                <td>${user.getFullName()}</td>
                                 <td>${user.getEmail()}</td>
                                 <td>${user.getRole()}</td>
                                 <td>${user.getJoinedDate()}</td>
-                                <td><a href="">edit</a> <a href="">delete</a></td>
+                                <td>
+                                    <a href="#" class="btn btn-sm btn-success"><i class="fa fa-eye"></i> View</a>
+                                    <a href="#" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i> Edit</a>
+                                    <a href="#" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                                </td>
                             </tr>
                         </c:forEach>
                     </tbody>
                 </table>
             </div>
         </div>
-    </div>
 </body>
 </html>

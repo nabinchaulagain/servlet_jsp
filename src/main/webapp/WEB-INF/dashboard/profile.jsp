@@ -12,39 +12,30 @@
     <%@include file="./sidebar.jsp" %>
         <div id="page-content-wrapper">
             <div class="container-fluid">
-                <h1 class="display-1 my-4">${user.getUsername()}</h1>
-                
-                <table class="table table-borderless profile-details-table">
+                <h4 class="my-3">${user.getUsername()}'s profile</h4>
+                <table class="table table-borderless table-sm profile-details-table">
                     <tbody>
                         <tr>
-                            <th scope="row">First Name</th>
-                            <td>${user.getFirstName()}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Last Name</th>
-                            <td>${user.getLastName()}</td>
+                            <th scope="row">Name</th>
+                            <td>${user.getFullName()}</td>
                         </tr>
                         <tr>
                             <th scope="row">Email</th>
                             <td>${user.getEmail()}</td>
                         </tr>
                         <tr>
-                            <th scope="row">Role</th>
-                            <td>${user.getRole()}</td>
-                        </tr>
-                        <tr>
                             <th scope="row">Mobile Number</th>
                             <td>${user.getPhoneNum()}</td>
                         </tr>
                         <tr>
-                            <th scope="row">Joined date</th>
+                            <th scope="row">Joined On</th>
                             <td>${user.getJoinedDate()}</td>
                         </tr>
                     </tbody>
                 </table>
                         
-                <h1 class="mt-5">History:</h1>
-                <table class="table my-5 table-hover">
+                <h4 class="mt-5">History:</h4>
+                <table class="table my-2 table-hover">
                     <thead>
                         <tr>
                             <th>History Id</th>
