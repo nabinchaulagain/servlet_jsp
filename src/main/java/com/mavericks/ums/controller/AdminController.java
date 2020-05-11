@@ -10,6 +10,7 @@ import com.mavericks.ums.dao.UserHistoryDao;
 import com.mavericks.ums.model.User;
 import com.mavericks.ums.model.UserHistory;
 import com.mavericks.ums.util.AuthValidator;
+import com.mavericks.ums.util.Mailer;
 import com.mavericks.ums.util.Toast;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -194,6 +195,9 @@ public class AdminController extends HttpServlet {
             Toast toast = new Toast("Account created successfully", Toast.MSG_TYPE_SUCCESS);
             toast.show(req);
             resp.sendRedirect(req.getContextPath()+"/admin/users");
+            if(req.getParameter("sendMail") !=  null){
+                Mailer.sendCredentialsAfterUserAdd(user, req);
+            }
             return;
         }
         req.setAttribute("initialValues", user);
@@ -259,6 +263,9 @@ public class AdminController extends HttpServlet {
             Toast toast = new Toast("User Edited successfully", Toast.MSG_TYPE_SUCCESS);
             toast.show(req);
             resp.sendRedirect(req.getContextPath() + "/admin/users");
+            if(req.getParameter("sendMail") !=  null){
+                Mailer.sendCredentialsAfterUserEdit(user, req);
+            }
             return;
         }
         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/dashboard/userForm.jsp");

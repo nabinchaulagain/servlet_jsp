@@ -47,9 +47,10 @@
                                                 class="btn btn-sm btn-warning">
                                                 <i class="fa fa-edit"></i> Edit
                                             </a>
+                                            <a href="#" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i> Block</a>
                                         </c:if>
 
-                                        <a href="#" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i> Block</a>
+                                       
                                     </td>
                                 </tr>
                             </c:forEach>
