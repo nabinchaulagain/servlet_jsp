@@ -64,6 +64,7 @@ public class AuthController extends HttpServlet {
                     break;
                 case "/logout":
                     logout(req,resp);
+                    break;
                 default:
                     super.doPost(req, resp);
             }

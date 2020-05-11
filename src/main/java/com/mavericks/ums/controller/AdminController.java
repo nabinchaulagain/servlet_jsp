@@ -9,9 +9,11 @@ import com.mavericks.ums.dao.UserDao;
 import com.mavericks.ums.dao.UserHistoryDao;
 import com.mavericks.ums.model.User;
 import com.mavericks.ums.model.UserHistory;
+import com.mavericks.ums.util.AuthValidator;
 import com.mavericks.ums.util.Toast;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Map;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,10 +26,10 @@ import javax.servlet.http.HttpSession;
  *
  * @author Acer
  */
-@WebServlet(name = "AdminController", urlPatterns = {"/admin", "/admin/users", "/profile", "/admin/users/delete"})
+@WebServlet(name = "AdminController", urlPatterns = {"/admin", "/admin/users", "/profile", "/admin/deleteUser","/admin/addUser","/admin/editUser"})
 public class AdminController extends HttpServlet {
-    private UserDao userDao = new UserDao();
-    private UserHistoryDao userHistoryDao = new UserHistoryDao();
+    private final UserDao userDao = new UserDao();
+    private final UserHistoryDao userHistoryDao = new UserHistoryDao();
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -61,7 +63,34 @@ public class AdminController extends HttpServlet {
                 case "/profile":
                     showProfilePage(req, resp);
                     break;
-                case "/admin/users/delete":
+                case "/admin/addUser":
+                    showAddUserPage(req, resp);
+                    break;
+                case "/admin/editUser":
+                    showEditUserPage(req,resp);
+                    break;
+                case "/admin/deleteUser":
+                    showDeleteUserPage(req, resp);
+                    break;
+            }
+        }
+        catch(SQLException ex){
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String path = req.getServletPath();
+        try{
+            switch(path) {
+                case "/admin/addUser":
+                    addUser(req, resp);
+                    break;
+                case "/admin/editUser":
+                    editUser(req,resp);
+                    break;
+                case "/admin/deleteUser":
                     deleteUser(req, resp);
                     break;
             }
@@ -70,7 +99,7 @@ public class AdminController extends HttpServlet {
             ex.printStackTrace();
         }
     }
-    
+
     private void showDashboardPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/dashboard/dashboard.jsp");
         req.setAttribute("pageTitle", "Dashboard");
@@ -94,18 +123,149 @@ public class AdminController extends HttpServlet {
         req.setAttribute("user", u);
         dispatcher.forward(req, resp);
     }
+    
+    private void showDeleteUserPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException{
+        try{
+            int id = Integer.parseInt(req.getParameter("id"));
+            User user = userDao.getUserById(id);
+            if(user == null || user.isAdmin()){
+                resp.sendRedirect(req.getContextPath()+"/admin/users");
+                return;
+            }
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/dashboard/deleteUser.jsp");
+            req.setAttribute("user", user);
+            dispatcher.forward(req,resp);
+        }
+        catch(NumberFormatException ex){
+            resp.sendRedirect(req.getContextPath()+"/admin");
+        }
+    }
 
     private void deleteUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
-        int id = Integer.parseInt(req.getParameter("id"));
-        String deletedUser = userDao.getUserById(id).getUsername();
-        boolean isDeleted = userDao.deleteUser(id);
-        if(isDeleted){
-            HttpSession session = req.getSession();
-            User sessionUser = (User) session.getAttribute("sessionUser");
-            userHistoryDao.createUserHistory(new UserHistory(sessionUser, "Deleting User", "User with Username: " + deletedUser));
+        try{
+            int id = Integer.parseInt(req.getParameter("id"));
+            User user = userDao.getUserById(id);
+            if(user == null || user.isAdmin()){
+                resp.sendRedirect(req.getContextPath()+"/admin/users");
+                return;
+            }
+            boolean isDeleted = userDao.deleteUser(id);
+            if(isDeleted){
+                HttpSession session = req.getSession();
+                User sessionUser = (User) session.getAttribute("sessionUser");
+                userHistoryDao.createUserHistory(new UserHistory(sessionUser, "User Deletion", "Deleted user with username " + user.getUsername()));
+            }
+            Toast toast = new Toast("User deleted successfully", Toast.MSG_TYPE_SUCCESS);
+            toast.show(req);
+            resp.sendRedirect(req.getContextPath()+"/admin/users");
         }
-        Toast toast = new Toast("User deleted successfully", Toast.MSG_TYPE_SUCCESS);
-        toast.show(req);
-        resp.sendRedirect(req.getContextPath()+"/admin/users");
+        catch(NumberFormatException ex){
+            resp.sendRedirect(req.getContextPath()+"/admin");
+        }
+    }
+    private void showAddUserPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/dashboard/userForm.jsp");
+        req.setAttribute("pageTitle", "Add User");
+        req.setAttribute("formType","Add");
+        dispatcher.forward(req,resp);          
+    }
+    
+    private void addUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException{
+        User user = new User(
+                req.getParameter("username"),
+                req.getParameter("password"),
+                req.getParameter("email"),
+                req.getParameter("firstName"),
+                req.getParameter("lastName"),
+                Long.parseLong(req.getParameter("phoneNum"))  
+        );
+        user.setRole(req.getParameter("role"));
+        Map<String, String> errors = AuthValidator.validateForRegister(user, userDao);
+        if (errors.isEmpty()) {
+            int id = userDao.createUser(user);
+            user.setId(id);
+            User admin = (User) req.getSession().getAttribute("sessionUser");
+            userHistoryDao.createUserHistory(new UserHistory(user, "User Creation", "Account created by admin ("+ admin.getUsername()+")"));
+            userHistoryDao.createUserHistory(new UserHistory(
+                    admin, 
+                    "Account creation",
+                    user.getRole()+" created with username "+user.getUsername()+" and email "+user.getEmail()
+            ));
+            Toast toast = new Toast("Account created successfully", Toast.MSG_TYPE_SUCCESS);
+            toast.show(req);
+            resp.sendRedirect(req.getContextPath()+"/admin/users");
+            return;
+        }
+        req.setAttribute("initialValues", user);
+        req.setAttribute("errors", errors);
+        showAddUserPage(req, resp);
+    }
+    private void showEditUserPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException{
+        try{    
+            int id = Integer.parseInt(req.getParameter("id"));
+            User user = userDao.getUserById(id);
+            if(user == null || user.isAdmin()){
+                resp.sendRedirect(req.getContextPath()+"/admin/users");
+                return;
+            }
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/dashboard/userForm.jsp");
+            req.setAttribute("pageTitle", "Edit User");
+            req.setAttribute("formType","Edit");
+            req.setAttribute("initialValues", user);
+            dispatcher.forward(req,resp);
+        }
+        catch(NumberFormatException ex){
+            resp.sendRedirect(req.getContextPath()+"/admin");
+        }
+    }
+    
+    private void editUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException{
+        int id = -1;
+        User prevUser = null;
+        try {    
+            id = Integer.parseInt(req.getParameter("id"));
+            prevUser = userDao.getUserById(id);
+            if(prevUser == null || prevUser.isAdmin()){
+                resp.sendRedirect(req.getContextPath()+"/admin/users");
+                return;
+            }
+        }
+        catch (NumberFormatException ex){
+            resp.sendRedirect(req.getContextPath()+"/admin");
+        }
+        User user = new User(
+                req.getParameter("username"),
+                req.getParameter("password"),
+                req.getParameter("email"),
+                req.getParameter("firstName"),
+                req.getParameter("lastName"),
+                Long.parseLong(req.getParameter("phoneNum"))
+        );
+        user.setRole(req.getParameter("role"));
+        user.setId(id);
+        Map<String, String> errors = AuthValidator.validateForEditUser(prevUser,user, userDao);
+        if (errors.isEmpty()) {
+            userDao.editUser(user);
+            User admin = (User) req.getSession().getAttribute("sessionUser");
+            String changedMsg = user.getChangedFields(prevUser);
+            if(!changedMsg.equals("")){
+                userHistoryDao.createUserHistory(new UserHistory(user, "User Edit",changedMsg + " by admin ("+admin.getUsername()+")"));
+                userHistoryDao.createUserHistory(new UserHistory(
+                        admin,
+                        "User Edit",
+                        changedMsg + " for user with username "+ prevUser.getUsername()
+                ));
+            }
+            Toast toast = new Toast("User Edited successfully", Toast.MSG_TYPE_SUCCESS);
+            toast.show(req);
+            resp.sendRedirect(req.getContextPath() + "/admin/users");
+            return;
+        }
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/dashboard/userForm.jsp");
+        req.setAttribute("pageTitle", "Edit User");
+        req.setAttribute("formType","Edit");
+        req.setAttribute("initialValues", user);
+        req.setAttribute("errors", errors);
+        dispatcher.forward(req,resp);
     }
 }

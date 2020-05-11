@@ -35,10 +35,9 @@
                 </table>
                         
                 <h4 class="mt-5">History:</h4>
-                <table class="table my-2 table-hover">
+                <table class="table mb-4 table-hover table-bordered w-auto mx-auto">
                     <thead>
                         <tr>
-                            <th>History Id</th>
                             <th>Action</th>
                             <th>Detail</th>
                             <th>Date and Time</th>
@@ -47,7 +46,6 @@
                     <tbody>
                         <c:forEach items="${allHistories}" var="history">
                             <tr>
-                                <td>${history.getId()}</td>
                                 <td>${history.getAction()}</td>
                                 <td>${history.getDetail()}</td>
                                 <td>${history.getDateAndTime()}</td>
@@ -57,6 +55,5 @@
                 </table>
             </div>
         </div>
-    </div>
 </body>
 </html>

@@ -5,7 +5,9 @@
  */
 package com.mavericks.ums.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 /**
  *
  * @author nabin
@@ -126,6 +128,37 @@ public class User {
     }
     public String getFullName(){
         return this.getFirstName()+ " "+ this.getLastName();
+    }
+    
+    public String getChangedFields(User prevState){
+       List<String> changedMessages = new ArrayList<>();
+       if(!this.getEmail().equals(prevState.getEmail())){
+           changedMessages.add("email changed from "+ prevState.getEmail() + " to "+ this.getEmail());
+       }
+       if(!this.getUsername().equals(prevState.getUsername())){
+           changedMessages.add("username changed from "+ prevState.getUsername()+ " to "+ this.getUsername());
+       }
+       if(!this.getFullName().equals(prevState.getFullName())){
+          changedMessages.add("name changed from "+ prevState.getFullName()+ " to "+ this.getFullName());
+       }
+       if(!this.getPassword().equals(prevState.getPassword())){
+           changedMessages.add("password changed");
+       }
+       if(this.getPhoneNum() != prevState.getPhoneNum()){
+           changedMessages.add("email changed from "+ prevState.getPhoneNum() + " to "+ this.getPhoneNum());
+       }
+       StringBuilder buff = new StringBuilder();
+       if(changedMessages.isEmpty()){
+           return "";
+       }
+       buff.append(changedMessages.get(0));
+       for(int i=1; i<= changedMessages.size() -2 ; i++){
+           buff.append(", ").append(changedMessages.get(i));
+       }
+       if(changedMessages.size() >= 2){
+           buff.append(" and ").append(changedMessages.get(changedMessages.size()-1));
+       }
+       return buff.toString();
     }
 
     @Override

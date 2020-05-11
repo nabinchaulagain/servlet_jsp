@@ -37,8 +37,18 @@
                                     <td>${user.getJoinedDate()}</td>
                                     <td>
                                         <a href="#" class="btn btn-sm btn-success"><i class="fa fa-eye"></i> View</a>
-                                        <a href="#" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
-                                        <a href="#" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i> Edit</a>
+                                        <c:if test="${!user.isAdmin()}">
+                                            <a 
+                                                href="${pageContext.request.contextPath}/admin/deleteUser?id=${user.getId()}"
+                                                class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete
+                                            </a>
+                                            <a
+                                                href="${pageContext.request.contextPath}/admin/editUser?id=${user.getId()}"
+                                                class="btn btn-sm btn-warning">
+                                                <i class="fa fa-edit"></i> Edit
+                                            </a>
+                                        </c:if>
+
                                         <a href="#" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i> Block</a>
                                     </td>
                                 </tr>
