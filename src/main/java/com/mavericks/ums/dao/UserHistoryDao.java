@@ -24,8 +24,7 @@ public class UserHistoryDao {
     Connection conn = DBSingleton.getConnection();
     private final UserDao userDao = new UserDao();
     
-    public int createUserHistory(User user, String action, String detail) throws SQLException {        
-        UserHistory userHistory = new UserHistory(user,action,detail);
+    public int createUserHistory(UserHistory userHistory) throws SQLException {        
         PreparedStatement stmt = conn.prepareStatement(
                 "INSERT INTO user_history(user_id, action, detail) VALUES (?,?,?)",
                 Statement.RETURN_GENERATED_KEYS

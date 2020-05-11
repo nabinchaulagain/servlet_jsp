@@ -98,18 +98,14 @@ public class AdminController extends HttpServlet {
     private void deleteUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         int id = Integer.parseInt(req.getParameter("id"));
         String deletedUser = userDao.getUserById(id).getUsername();
-        Boolean isDeleted = userHistoryDao.deleteUserHistoryByUserId(id);
-        isDeleted = userDao.deleteUser(id);
+        boolean isDeleted = userDao.deleteUser(id);
         if(isDeleted){
             HttpSession session = req.getSession();
             User sessionUser = (User) session.getAttribute("sessionUser");
-            userHistoryDao.createUserHistory(sessionUser, "Deleting User", "User with Username: " + deletedUser);
-            Toast toast = new Toast("User deleted successfully", Toast.MSG_TYPE_SUCCESS);
-            toast.show(req);
-        } else {
-            Toast toast = new Toast("User deleted successfully", Toast.MSG_TYPE_SUCCESS);
-            toast.show(req);
+            userHistoryDao.createUserHistory(new UserHistory(sessionUser, "Deleting User", "User with Username: " + deletedUser));
         }
+        Toast toast = new Toast("User deleted successfully", Toast.MSG_TYPE_SUCCESS);
+        toast.show(req);
         resp.sendRedirect(req.getContextPath()+"/admin/users");
     }
 }

@@ -29,7 +29,7 @@ import javax.servlet.http.HttpSession;
 @WebServlet(name = "AuthController", urlPatterns = {"/login", "/register","/logout"})
 public class AuthController extends HttpServlet {
     private final UserDao userDao = new UserDao();
-    private UserHistoryDao userHistoryDao = new UserHistoryDao();
+    private final UserHistoryDao userHistoryDao = new UserHistoryDao();
     
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -64,6 +64,8 @@ public class AuthController extends HttpServlet {
                     break;
                 case "/logout":
                     logout(req,resp);
+                default:
+                    super.doPost(req, resp);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -90,7 +92,7 @@ public class AuthController extends HttpServlet {
         if (errors.isEmpty()) {
             int id = userDao.createUser(user);
             user.setId(id);
-            userHistoryDao.createUserHistory(user,"Registered","");
+            userHistoryDao.createUserHistory(new UserHistory(user,"Sign up","User created his account."));
             HttpSession session = req.getSession();
             session.setAttribute("sessionUser", user);
             Toast toast = new Toast("Account created successfully", Toast.MSG_TYPE_SUCCESS);
@@ -120,7 +122,7 @@ public class AuthController extends HttpServlet {
             user = userDao.getUserByUsermame(user.getUsername());
             HttpSession session = req.getSession();
             session.setAttribute("sessionUser", user);
-            userHistoryDao.createUserHistory(user,"Logged in","");
+            userHistoryDao.createUserHistory(new UserHistory(user,"Login","User logged into the application"));
             Toast toast = new Toast("You are now logged in as "+user.getUsername(), Toast.MSG_TYPE_SUCCESS);
             toast.show(req);
             if(user.isAdmin()){
@@ -135,8 +137,10 @@ public class AuthController extends HttpServlet {
         req.setAttribute("errors", errors);
         showLoginPage(req, resp);
     }
-    private void logout(HttpServletRequest req,HttpServletResponse resp) throws ServletException,IOException{
+    private void logout(HttpServletRequest req,HttpServletResponse resp) throws ServletException,IOException,SQLException{
         HttpSession session = req.getSession(false);
+        User user = (User) session.getAttribute("sessionUser");
+        userHistoryDao.createUserHistory(new UserHistory(user, "Logout", "User logged out of the application"));
         session.invalidate();
         Toast toast = new Toast("You are now logged out", Toast.MSG_TYPE_SUCCESS);
         toast.show(req);

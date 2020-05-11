@@ -52,7 +52,15 @@
     width: 55% !important;
 }
 
-@media (min-width: 768px) {
+@media (min-width:0px) and (max-width:1048px){
+    .card-body{
+    font-size: 60px;
+    }
+    .card-body .card-title {
+        font-size: 40px
+    }
+}
+@media (min-width: 768px)  {
     #sidebar-wrapper {
         margin-left: 0;
     }

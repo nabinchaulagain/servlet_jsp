@@ -17,7 +17,7 @@
                 <div class="card-deck my-5 px-5">
                     <div class="card">
                         <div class="card-body text-center">
-                            <h4 class="card-title">Total Users</h4>
+                            <h5 class="card-title">Total Users</h5>
                             <p class="card-text">${totalUser}</p>
                         </div>
                     </div>
