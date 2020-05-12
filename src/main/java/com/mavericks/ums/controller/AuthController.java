@@ -87,7 +87,7 @@ public class AuthController extends HttpServlet {
                 req.getParameter("email"),
                 req.getParameter("firstName"),
                 req.getParameter("lastName"),
-                Long.parseLong(req.getParameter("phoneNum"))
+                req.getParameter("phoneNum")
         );
         Map<String, String> errors = AuthValidator.validateForRegister(user, userDao);
         if (errors.isEmpty()) {

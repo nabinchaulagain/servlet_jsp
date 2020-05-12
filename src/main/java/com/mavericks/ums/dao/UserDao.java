@@ -31,7 +31,7 @@ public class UserDao {
         stmt.setString(1,user.getUsername());
         stmt.setString(2, user.getEmail());
         stmt.setString(3, user.getPassword());
-        stmt.setLong(4, user.getPhoneNum());
+        stmt.setLong(4, Long.parseLong(user.getPhoneNum()));
         stmt.setString(5,user.getRole());
         stmt.setString(6,user.getFirstName());
         stmt.setString(7, user.getLastName());
@@ -53,7 +53,7 @@ public class UserDao {
         stmt.setString(1,user.getUsername());
         stmt.setString(2, user.getEmail());
         stmt.setString(3, user.getPassword());
-        stmt.setLong(4, user.getPhoneNum());
+        stmt.setLong(4, Long.parseLong(user.getPhoneNum()));
         stmt.setString(5, user.getFirstName());
         stmt.setString(6, user.getLastName());
         stmt.setInt(7,user.getId());
@@ -118,7 +118,7 @@ public class UserDao {
             resSet.getString("last_name"),
             resSet.getString("role"),
             resSet.getTimestamp("joined_date"),
-            resSet.getLong("phone_num")
+            resSet.getString("phone_num")
         );
         return user;
     }

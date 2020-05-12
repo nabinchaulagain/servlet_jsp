@@ -115,7 +115,7 @@ public class UserController extends HttpServlet {
                 req.getParameter("email"),
                 req.getParameter("firstName"),
                 req.getParameter("lastName"),
-                Long.parseLong(req.getParameter("phoneNum"))
+                req.getParameter("phoneNum")
         );
         user.setId(prevUser.getId());
         Map<String, String> errors = AuthValidator.validateForEditUser(prevUser,user, userDao);

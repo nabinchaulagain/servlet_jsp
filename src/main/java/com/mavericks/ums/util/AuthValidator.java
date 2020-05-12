@@ -51,7 +51,7 @@ public class AuthValidator {
             errors.put("lastName","Your last name is required");
         }
         Pattern validPhonePattern =  Pattern.compile("^\\d{10}$");
-        Matcher phoneNumMatcher = validPhonePattern.matcher(String.valueOf(user.getPhoneNum()));
+        Matcher phoneNumMatcher = validPhonePattern.matcher(user.getPhoneNum());
         if(! phoneNumMatcher.matches()){
             errors.put("phoneNum","Phone number is incorrect");
         }
@@ -89,7 +89,7 @@ public class AuthValidator {
             errors.put("lastName","Your last name is required");
         }
         Pattern validPhonePattern =  Pattern.compile("^\\d{10}$");
-        Matcher phoneNumMatcher = validPhonePattern.matcher(String.valueOf(user.getPhoneNum()));
+        Matcher phoneNumMatcher = validPhonePattern.matcher(user.getPhoneNum());
         if(!phoneNumMatcher.matches()){
             errors.put("phoneNum","Phone number is incorrect");
         }

@@ -165,7 +165,7 @@ public class AdminController extends HttpServlet {
                 req.getParameter("email"),
                 req.getParameter("firstName"),
                 req.getParameter("lastName"),
-                Long.parseLong(req.getParameter("phoneNum"))  
+                req.getParameter("phoneNum")
         );
         user.setRole(req.getParameter("role"));
         Map<String, String> errors = AuthValidator.validateForRegister(user, userDao);
@@ -230,7 +230,7 @@ public class AdminController extends HttpServlet {
                 req.getParameter("email"),
                 req.getParameter("firstName"),
                 req.getParameter("lastName"),
-                Long.parseLong(req.getParameter("phoneNum"))
+                req.getParameter("phoneNum")
         );
         user.setRole(req.getParameter("role"));
         user.setId(id);

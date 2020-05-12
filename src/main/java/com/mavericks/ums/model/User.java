@@ -23,9 +23,9 @@ public class User {
     private String lastName;
     private String role = "user";
     private Timestamp joinedDate;
-    private long phoneNum;
+    private String phoneNum;
 
-    public User(int id, String username, String password, String email,String firstName,String lastName,String role, Timestamp joinedDate, long phoneNum) {
+    public User(int id, String username, String password, String email,String firstName,String lastName,String role, Timestamp joinedDate, String phoneNum) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -37,7 +37,7 @@ public class User {
         this.phoneNum = phoneNum;
     }
 
-    public User(String username, String password, String email, String firstName, String lastName, long phoneNum) {
+    public User(String username, String password, String email, String firstName, String lastName, String phoneNum) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -116,11 +116,11 @@ public class User {
         this.joinedDate = joinedDate;
     }
 
-    public long getPhoneNum() {
+    public String getPhoneNum() {
         return phoneNum;
     }
 
-    public void setPhoneNum(long phoneNum) {
+    public void setPhoneNum(String phoneNum) {
         this.phoneNum = phoneNum;
     }
     
@@ -145,8 +145,8 @@ public class User {
        if(!this.getPassword().equals(prevState.getPassword())){
            changedMessages.add("password changed");
        }
-       if(this.getPhoneNum() != prevState.getPhoneNum()){
-           changedMessages.add("email changed from "+ prevState.getPhoneNum() + " to "+ this.getPhoneNum());
+       if(this.getPhoneNum().equals(prevState.getPhoneNum())){
+           changedMessages.add("phone number changed from "+ prevState.getPhoneNum() + " to "+ this.getPhoneNum());
        }
        StringBuilder buff = new StringBuilder();
        if(changedMessages.isEmpty()){
