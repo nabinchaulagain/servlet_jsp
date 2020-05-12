@@ -36,7 +36,7 @@
                                     <td>${user.getRole()}</td>
                                     <td>${user.getJoinedDate()}</td>
                                     <td>
-                                        <a href="#" class="btn btn-sm btn-success"><i class="fa fa-eye"></i> View</a>
+                                        <a href="${pageContext.request.contextPath}/profile?id=${user.getId()}" class="btn btn-sm btn-success"><i class="fa fa-eye"></i> View</a>
                                         <c:if test="${!user.isAdmin()}">
                                             <a 
                                                 href="${pageContext.request.contextPath}/admin/deleteUser?id=${user.getId()}"

@@ -17,7 +17,7 @@
                     <form method="POST" style="display:inline">
                         <input type="submit" class="btn btn-lg btn-success" value="Yes, I want to">
                     </form>
-                    <a class="btn btn-lg btn-danger ml-3" href="${pageContext.request.contextPath}/admin/users">No, Take me back</a>
+                    <button class="btn btn-lg btn-danger ml-3" onclick="window.history.back()">No, Take me back</button>
                 </div>
             </div>
         </div>

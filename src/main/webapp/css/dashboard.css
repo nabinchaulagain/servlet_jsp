@@ -44,13 +44,6 @@
 .card-body .card-title {
     font-size: 60px
 }
-.table-bordered td,.table-bordered th{
-    border: 1px solid grey !important;
-}
-
-.profile-details-table{
-    width: 55% !important;
-}
 
 @media (min-width:0px) and (max-width:1048px){
     .card-body{

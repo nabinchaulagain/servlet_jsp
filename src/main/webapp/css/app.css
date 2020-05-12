@@ -71,3 +71,11 @@ body{
 .toast-error{
     background: #ff6969;
 }
+
+.table-bordered td,.table-bordered th{
+    border: 1px solid grey !important;
+}
+
+.profile-details-table{
+    width: auto !important;
+}

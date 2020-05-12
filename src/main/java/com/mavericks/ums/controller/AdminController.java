@@ -27,7 +27,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Acer
  */
-@WebServlet(name = "AdminController", urlPatterns = {"/admin", "/admin/users", "/profile", "/admin/deleteUser","/admin/addUser","/admin/editUser"})
+@WebServlet(name = "AdminController", urlPatterns = {"/admin", "/admin/users", "/admin/deleteUser","/admin/addUser","/admin/editUser"})
 public class AdminController extends HttpServlet {
     private final UserDao userDao = new UserDao();
     private final UserHistoryDao userHistoryDao = new UserHistoryDao();
@@ -60,9 +60,6 @@ public class AdminController extends HttpServlet {
                     break;
                 case "/admin/users":
                     showViewUserPage(req, resp);
-                    break;
-                case "/profile":
-                    showProfilePage(req, resp);
                     break;
                 case "/admin/addUser":
                     showAddUserPage(req, resp);
@@ -112,16 +109,6 @@ public class AdminController extends HttpServlet {
         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/dashboard/viewUsers.jsp");
         req.setAttribute("pageTitle", "View Users");
         req.setAttribute("allusers", userDao.getUserList());
-        dispatcher.forward(req, resp);
-    }
-
-    private void showProfilePage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
-        int id = Integer.parseInt(req.getParameter("id"));
-        User u = userDao.getUserById(id);
-        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/dashboard/profile.jsp");
-        req.setAttribute("pageTitle", u.getUsername());
-        req.setAttribute("allHistories", userHistoryDao.getUserHistoryListByUserId(u.getId()));
-        req.setAttribute("user", u);
         dispatcher.forward(req, resp);
     }
     

@@ -98,7 +98,7 @@ public class AuthController extends HttpServlet {
             session.setAttribute("sessionUser", user);
             Toast toast = new Toast("Account created successfully", Toast.MSG_TYPE_SUCCESS);
             toast.show(req);
-            resp.sendRedirect(req.getContextPath());
+            resp.sendRedirect(req.getContextPath()+"/profile?id="+user.getId());
             return;
         }
         req.setAttribute("initialValues", user);
@@ -130,7 +130,7 @@ public class AuthController extends HttpServlet {
                 resp.sendRedirect(req.getContextPath()+"/admin");
             }
             else{
-                resp.sendRedirect(req.getContextPath());
+                resp.sendRedirect(req.getContextPath()+"/profile?id="+user.getId());
             }
             return;
         }
