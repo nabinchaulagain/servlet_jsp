@@ -10,7 +10,7 @@
         <%@include file="../navbar.jsp" %>
         <div class="container-fluid">
             <div class="my-3">
-               <h4>${pageTitle}</h4>
+                <h4>${user.getUsername()}</h4>
             </div>
             <table class="table table-borderless table-sm profile-details-table">
                 <tbody>
@@ -32,21 +32,20 @@
                     </tr>
                 </tbody>
             </table>
-                        <c:if test="${sessionUser.isAdmin() && !user.isAdmin()}">
-                            <div>
-                                 <a
-                                        href="${pageContext.request.contextPath}/admin/editUser?id=${user.getId()}"
-                                        class="btn btn-sm btn-warning">
-                                        <i class="fa fa-edit"></i> Edit
-                                    </a>
-                                   <a 
-                                        href="${pageContext.request.contextPath}/admin/deleteUser?id=${user.getId()}"
-                                        class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete
-                                    </a>
-                                    <a href="#" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i> Block</a>
-                            </div>
-                                
-                        </c:if>
+            <c:if test="${sessionUser.isAdmin() && !user.isAdmin()}">
+                <div>
+                    <a
+                        href="${pageContext.request.contextPath}/admin/editUser?id=${user.getId()}"
+                        class="btn btn-sm btn-warning">
+                        <i class="fa fa-edit"></i> Edit
+                    </a>
+                    <a 
+                        href="${pageContext.request.contextPath}/admin/deleteUser?id=${user.getId()}"
+                        class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete
+                    </a>
+                    <a href="#" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i> Block</a>
+                </div>      
+             </c:if>
             <h4 class="mt-5 text-center">History:</h4>
             <table class="table mb-4 table-hover table-bordered w-auto mx-auto">
                 <thead>

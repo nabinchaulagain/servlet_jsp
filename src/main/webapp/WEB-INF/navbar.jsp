@@ -9,12 +9,12 @@
         <ul class="navbar-nav ml-auto">
             <c:if test='${sessionUser != null}'>
                 <li class="nav-item dropdown">
-                   
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         ${sessionUser.getUsername()}
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="${pageContext.request.contextPath}/profile?id=<c:out value='${sessionUser.getId()}' />">My Profile</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/profile?id=${sessionUser.getId()}">My Profile</a>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/profile/edit">Edit Profile</a>
                         <c:if test="${sessionUser.isAdmin()}">
                             <a class="dropdown-item" href="${pageContext.request.contextPath}/admin">Admin Dashboard</a>
                         </c:if>
