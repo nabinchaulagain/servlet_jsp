@@ -5,6 +5,8 @@
  */
 package com.mavericks.ums.model;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,10 +22,10 @@ public class User {
     private String firstName;
     private String lastName;
     private String role = "user";
-    private Date joinedDate;
+    private Timestamp joinedDate;
     private long phoneNum;
 
-    public User(int id, String username, String password, String email,String firstName,String lastName,String role, Date joinedDate, long phoneNum) {
+    public User(int id, String username, String password, String email,String firstName,String lastName,String role, Timestamp joinedDate, long phoneNum) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -96,9 +98,7 @@ public class User {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-    
-    
-    
+
     public String getRole() {
         return role;
     }
@@ -107,11 +107,12 @@ public class User {
         this.role = role;
     }
 
-    public Date getJoinedDate() {
-        return joinedDate;
+    public String getJoinedDate() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd, hh:mm:ss a");
+        return formatter.format(joinedDate);
     }
 
-    public void setJoinedDate(Date joinedDate) {
+    public void setJoinedDate(Timestamp joinedDate) {
         this.joinedDate = joinedDate;
     }
 

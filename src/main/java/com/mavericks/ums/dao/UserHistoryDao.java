@@ -55,7 +55,7 @@ public class UserHistoryDao {
         return wasEdited;
     }
     public List<UserHistory> getUserHistoryListByUserId(int id) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM user_history WHERE user_id = ?");
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM user_history WHERE user_id = ? ORDER BY date_and_time DESC");
         stmt.setInt(1,id);
         ResultSet resSet = stmt.executeQuery();
         List<UserHistory> userhistories = new ArrayList<>();
@@ -77,7 +77,7 @@ public class UserHistoryDao {
                 userDao.getUserById(resSet.getInt("user_id")),
                 resSet.getString("action"),
                 resSet.getString("detail"),
-                resSet.getDate("date_and_time")
+                resSet.getTimestamp("date_and_time")
         );
         return userHistory;
     }

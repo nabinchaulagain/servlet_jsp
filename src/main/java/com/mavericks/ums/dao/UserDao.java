@@ -61,7 +61,7 @@ public class UserDao {
         return wasEdited;
     }
     public List<User> getUserList() throws SQLException{
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM user");
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM user ORDER BY joined_date DESC");
         ResultSet resSet = stmt.executeQuery();
         List<User> users = new ArrayList<>();
         while(resSet.next()){
@@ -117,7 +117,7 @@ public class UserDao {
             resSet.getString("first_name"),
             resSet.getString("last_name"),
             resSet.getString("role"),
-            resSet.getDate("joined_date"),
+            resSet.getTimestamp("joined_date"),
             resSet.getLong("phone_num")
         );
         return user;

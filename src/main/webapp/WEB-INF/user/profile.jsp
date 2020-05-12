@@ -43,7 +43,7 @@
                                         href="${pageContext.request.contextPath}/admin/deleteUser?id=${user.getId()}"
                                         class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete
                                     </a>
-                                    <a href="#" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i>Block</a>
+                                    <a href="#" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i> Block</a>
                             </div>
                                 
                         </c:if>

@@ -6,7 +6,8 @@
 package com.mavericks.ums.model;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  *
@@ -17,9 +18,9 @@ public class UserHistory {
     private User user;
     private String action;
     private String detail;
-    private Date dateAndTime;
+    private Timestamp dateAndTime;
 
-    public UserHistory(int id, User user, String action, String detail, Date dateAndTime) {
+    public UserHistory(int id, User user, String action, String detail, Timestamp dateAndTime) {
         this.id = id;
         this.user = user;
         this.action = action;
@@ -66,11 +67,11 @@ public class UserHistory {
     }
 
     public String getDateAndTime() {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd, hh:mm:ss a");
         return formatter.format(dateAndTime);
     }
 
-    public void setDateAndTime(Date dateAndTime) {
+    public void setDateAndTime(Timestamp dateAndTime) {
         this.dateAndTime = dateAndTime;
     }
     

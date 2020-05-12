@@ -49,8 +49,6 @@
                                             </a>
                                             <a href="#" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i> Block</a>
                                         </c:if>
-
-                                       
                                     </td>
                                 </tr>
                             </c:forEach>
