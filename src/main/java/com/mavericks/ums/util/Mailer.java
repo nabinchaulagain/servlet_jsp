@@ -25,36 +25,48 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author nabin
  */
-public class Mailer {
+public class Mailer{
     private static final String USERNAME = Secrets.USERNAME;
     private static final String PASSWORD = Secrets.PASSWORD;
-    
-//    public static void mailToken
-    public static void sendMail(String toAddress,String subject, String message) throws AddressException,MessagingException, GeneralSecurityException {
- 
-        // sets SMTP server properties
-        Properties properties = new Properties();
-        MailSSLSocketFactory sf = new MailSSLSocketFactory();
-        sf.setTrustAllHosts(true);
-        properties.put("mail.smtp.ssl.socketFactory", sf);
-        properties.put("mail.smtp.host", "smtp.gmail.com");
-        properties.put("mail.smtp.port", 587);
-        properties.put("mail.smtp.auth", true);
-        properties.put("mail.smtp.starttls.enable", true);
-        Authenticator auth = new Authenticator() {
+
+    public static void sendMail(final String toAddress,final String subject, final String message) throws AddressException, GeneralSecurityException {
+        Runnable emailTask = new Runnable() {
             @Override
-            public PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(USERNAME,PASSWORD);
+            public void run() {
+                try{
+                    Properties properties = new Properties();
+                    MailSSLSocketFactory sf = new MailSSLSocketFactory();
+                    sf.setTrustAllHosts(true);
+                    properties.put("mail.smtp.ssl.socketFactory", sf);
+                    properties.put("mail.smtp.host", "smtp.gmail.com");
+                    properties.put("mail.smtp.port", 587);
+                    properties.put("mail.smtp.auth", true);
+                    properties.put("mail.smtp.starttls.enable", true);
+                    Authenticator auth = new Authenticator() {
+                        @Override
+                        public PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication(USERNAME, PASSWORD);
+                        }
+                    };
+                    Session session = Session.getInstance(properties, auth);
+                    final Message msg = new MimeMessage(session);
+                    msg.setFrom(new InternetAddress(USERNAME));
+                    InternetAddress[] toAddresses = {new InternetAddress(toAddress)};
+                    msg.setRecipients(Message.RecipientType.TO, toAddresses);
+                    msg.setSubject(subject);
+                    msg.setContent(message, "text/html");
+                    Transport.send(msg);
+                }
+                catch(AddressException ex  ){
+                    ex.printStackTrace();
+                }
+                catch(GeneralSecurityException | MessagingException ex){
+                    ex.printStackTrace();
+                }
             }
         };
-        Session session = Session.getInstance(properties, auth);
-        Message msg = new MimeMessage(session);
-        msg.setFrom(new InternetAddress(USERNAME));
-        InternetAddress[] toAddresses = { new InternetAddress(toAddress) };
-        msg.setRecipients(Message.RecipientType.TO, toAddresses);
-        msg.setSubject(subject);
-        msg.setContent(message, "text/html");
-        Transport.send(msg); 
+        Thread emailThread = new Thread(emailTask);
+        emailThread.start();
     }
     
     public static void sendCredentialsAfterUserAdd(User user,HttpServletRequest req){

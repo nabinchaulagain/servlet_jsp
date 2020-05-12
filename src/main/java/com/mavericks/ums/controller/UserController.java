@@ -10,7 +10,6 @@ import com.mavericks.ums.dao.UserHistoryDao;
 import com.mavericks.ums.model.User;
 import com.mavericks.ums.model.UserHistory;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 import javax.servlet.RequestDispatcher;
