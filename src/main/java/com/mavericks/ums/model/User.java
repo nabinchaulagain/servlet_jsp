@@ -8,7 +8,6 @@ package com.mavericks.ums.model;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 /**
  *
@@ -25,6 +24,11 @@ public class User {
     private Timestamp joinedDate;
     private String phoneNum;
 
+    public User(int id) {
+        this.id = id;
+    }
+
+    
     public User(int id, String username, String password, String email,String firstName,String lastName,String role, Timestamp joinedDate, String phoneNum) {
         this.id = id;
         this.username = username;

@@ -29,7 +29,7 @@ public class Mailer{
     private static final String USERNAME = Secrets.USERNAME;
     private static final String PASSWORD = Secrets.PASSWORD;
 
-    public static void sendMail(final String toAddress,final String subject, final String message) throws AddressException, GeneralSecurityException {
+    private static void sendMail(final String toAddress,final String subject, final String message) throws AddressException, GeneralSecurityException {
         Runnable emailTask = new Runnable() {
             @Override
             public void run() {
@@ -88,17 +88,17 @@ public class Mailer{
         try {
             sendMail(user.getEmail(),"Account created",mailContent);
         } catch (MessagingException | GeneralSecurityException ex) {
-            Logger.getLogger(Mailer.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
     private static String getBaseUrl(HttpServletRequest req){
         String scheme = req.getScheme() + "://";
         String serverName = req.getServerName();
-        String serverPort = ":"+req.getServerPort();
-        return scheme + serverName + serverPort + req.getContextPath();
+        int serverPort = req.getServerPort();
+        return scheme + serverName + ":" + serverPort + req.getContextPath();
     }
     public static void sendCredentialsAfterUserEdit(User user,HttpServletRequest req){
-         String mailContent = 
+        String mailContent = 
                 "<html>"+
                     "<body>"+
                            "<h2>Hello, "+user.getFullName()+"</h2>"+
@@ -116,8 +116,23 @@ public class Mailer{
         try {
             sendMail(user.getEmail(),"Account created",mailContent);
         } catch (MessagingException | GeneralSecurityException ex) {
-            Logger.getLogger(Mailer.class.getName()).log(Level.SEVERE, null, ex);
+           ex.printStackTrace();       
         }
     }
-    
+    public static void sendToken(User user,String token,HttpServletRequest req){
+        String mailContent = 
+                "<html>"+
+                    "<body>"+
+                           "<h2>Hello, "+user.getFullName()+"</h2>"+
+                           "<p>You requested a password reset for your UMS account.Click on the link below to reset your password.</p>"+
+                           "<a href='"+ getBaseUrl(req) +"/resetPassword?token="+token+"&user_id="+user.getId()+"'>Reset Here</a>"+
+                           "<p>If this wasn't you, just ignore this.</p>"+
+                    "</body>"+
+                 "</html>";
+        try {
+            sendMail(user.getEmail(),"Password reset",mailContent);
+        } catch (MessagingException | GeneralSecurityException ex) {
+           ex.printStackTrace();       
+        }
+    }
 }

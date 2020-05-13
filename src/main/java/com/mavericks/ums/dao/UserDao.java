@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  *
@@ -100,6 +101,7 @@ public class UserDao {
         }
         return null;
     }
+    
     public int getTotalUsers() throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM user");
         ResultSet resSet = stmt.executeQuery();
@@ -108,7 +110,18 @@ public class UserDao {
         result = resSet.getInt(1);
         return result;
     }
-     private User getUserFromResultSet(ResultSet resSet) throws SQLException{
+    
+    public boolean changePassword(String password, int userId) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement(
+                "UPDATE user SET password=? WHERE id = ?"
+        );
+        stmt.setString(1, password);
+        stmt.setInt(2, userId);
+        boolean wasEdited = stmt.executeUpdate() == 1;
+        return wasEdited;
+    }
+    
+    private User getUserFromResultSet(ResultSet resSet) throws SQLException{
         User user = new User(
             resSet.getInt("id"),
             resSet.getString("username"),
@@ -122,4 +135,5 @@ public class UserDao {
         );
         return user;
     }
+    
 }
