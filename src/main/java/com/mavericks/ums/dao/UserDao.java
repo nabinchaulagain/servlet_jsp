@@ -62,29 +62,36 @@ public class UserDao {
         return wasEdited;
     }
     public List<User> getUserList() throws SQLException{
-        PreparedStatement stmt = conn.prepareStatement("SELECT user.*,!isnull(block_list.id) AS isBlocked FROM user LEFT JOIN block_list ON user.id = block_list.user_id ORDER BY joined_date DESC");
+        PreparedStatement stmt = conn.prepareStatement(
+                "SELECT  user.*,!isnull(block_list.id) AS isBlocked FROM user LEFT JOIN block_list ON user.id = block_list.user_id ORDER BY joined_date DESC"
+        );
         ResultSet resSet = stmt.executeQuery();
         List<User> users = new ArrayList<>();
         while(resSet.next()){
             User user = getUserFromResultSet(resSet);
+            user.setIsBlocked(resSet.getBoolean("isBlocked"));
             users.add(user);
         }
         return users;
     }
     public User getUserById(int id) throws SQLException{
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT user.*,!isnull(block_list.id) AS isBlocked FROM user LEFT JOIN block_list ON user.id = block_list.user_id WHERE user.id=?");
+                "SELECT user.*,!isnull(block_list.id) AS isBlocked FROM user LEFT JOIN block_list ON user.id = block_list.user_id WHERE user.id=?"
+        );
+        
         stmt.setInt(1, id);
         ResultSet resSet = stmt.executeQuery();
         if(resSet.next()){
             User user = getUserFromResultSet(resSet);
+            user.setIsBlocked(resSet.getBoolean("isBlocked"));
             return user;
         }
         return null;
     }
+    
     public User getUserByUsermame(String username) throws SQLException{
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT user.*,!isnull(block_list.id) AS isBlocked FROM user LEFT JOIN block_list ON user.id = block_list.user_id WHERE user.username=?"
+                "SELECT * FROM user WHERE user.username=?"
         );
         stmt.setString(1, username);
         ResultSet resSet = stmt.executeQuery();
@@ -96,7 +103,7 @@ public class UserDao {
     }
     public User getUserByEmail(String email) throws SQLException{
         PreparedStatement stmt = conn.prepareStatement(
-            "SELECT user.*,!isnull(block_list.id) AS isBlocked FROM user LEFT JOIN block_list ON user.id = block_list.user_id WHERE user.email=?"
+            "SELECT * FROM user WHERE user.email=?"
         );
         stmt.setString(1, email);
         ResultSet resSet = stmt.executeQuery();
@@ -141,6 +148,7 @@ public class UserDao {
         boolean wasDeleted = stmt.executeUpdate() == 1;
         return wasDeleted;
     }
+    
     public String getBlockedMsg(int userId) throws SQLException{
         PreparedStatement stmt = conn.prepareStatement("SELECT reason FROM block_list WHERE user_id = ?");
         stmt.setInt(1,userId);
@@ -159,8 +167,7 @@ public class UserDao {
             resSet.getString("last_name"),
             resSet.getString("role"),
             resSet.getTimestamp("joined_date"),
-            resSet.getString("phone_num"),
-            resSet.getBoolean("isBlocked")
+            resSet.getString("phone_num")
         );
         return user;
     }

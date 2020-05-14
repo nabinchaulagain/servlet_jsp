@@ -30,7 +30,7 @@ public class User {
     }
 
     
-    public User(int id, String username, String password, String email,String firstName,String lastName,String role, Timestamp joinedDate, String phoneNum,boolean isBlocked) {
+    public User(int id, String username, String password, String email,String firstName,String lastName,String role, Timestamp joinedDate, String phoneNum) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -40,7 +40,6 @@ public class User {
         this.role = role;
         this.joinedDate = joinedDate;
         this.phoneNum = phoneNum;
-        this.isBlocked = isBlocked;
     }
 
     public User(String username, String password, String email, String firstName, String lastName, String phoneNum) {
