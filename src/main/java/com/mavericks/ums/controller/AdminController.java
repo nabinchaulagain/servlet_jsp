@@ -27,7 +27,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Acer
  */
-@WebServlet(name = "AdminController", urlPatterns = {"/admin", "/admin/users", "/admin/deleteUser","/admin/addUser","/admin/editUser"})
+@WebServlet(name = "AdminController", urlPatterns = {"/admin", "/admin/users", "/admin/deleteUser","/admin/addUser","/admin/editUser","/admin/blockUser","/admin/unblockUser"})
 public class AdminController extends HttpServlet {
     private final UserDao userDao = new UserDao();
     private final UserHistoryDao userHistoryDao = new UserHistoryDao();
@@ -70,6 +70,11 @@ public class AdminController extends HttpServlet {
                 case "/admin/deleteUser":
                     showDeleteUserPage(req, resp);
                     break;
+                case "/admin/blockUser":
+                    showBlockUserPage(req, resp);
+                    break;
+                default:
+                    super.doGet(req, resp);
             }
         }
         catch(SQLException ex){
@@ -91,22 +96,30 @@ public class AdminController extends HttpServlet {
                 case "/admin/deleteUser":
                     deleteUser(req, resp);
                     break;
+                case "/admin/blockUser":
+                    blockUser(req,resp);
+                    break;
+                case "/admin/unblockUser":
+                    unblockUser(req, resp);
+                    break;
+                default:
+                    super.doPost(req, resp);
             }
         }
         catch(SQLException ex){
             ex.printStackTrace();
         }
     }
-
+    
     private void showDashboardPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
-        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/dashboard/dashboard.jsp");
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/admin/dashboard.jsp");
         req.setAttribute("pageTitle", "Dashboard");
         req.setAttribute("totalUser", userDao.getTotalUsers());
         dispatcher.forward(req, resp);
     }
 
     private void showViewUserPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
-        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/dashboard/viewUsers.jsp");
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/admin/viewUsers.jsp");
         req.setAttribute("pageTitle", "View Users");
         req.setAttribute("allusers", userDao.getUserList());
         dispatcher.forward(req, resp);
@@ -120,7 +133,7 @@ public class AdminController extends HttpServlet {
                 resp.sendRedirect(req.getContextPath()+"/admin/users");
                 return;
             }
-            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/dashboard/deleteUser.jsp");
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/admin/deleteUser.jsp");
             req.setAttribute("user", user);
             dispatcher.forward(req,resp);
         }
@@ -152,7 +165,7 @@ public class AdminController extends HttpServlet {
         }
     }
     private void showAddUserPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/dashboard/userForm.jsp");
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/admin/userForm.jsp");
         req.setAttribute("pageTitle", "Add User");
         req.setAttribute("formType","Add");
         dispatcher.forward(req,resp);          
@@ -199,7 +212,7 @@ public class AdminController extends HttpServlet {
                 resp.sendRedirect(req.getContextPath()+"/admin/users");
                 return;
             }
-            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/dashboard/userForm.jsp");
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/admin/userForm.jsp");
             req.setAttribute("pageTitle", "Edit User");
             req.setAttribute("formType","Edit");
             req.setAttribute("initialValues", user);
@@ -240,7 +253,7 @@ public class AdminController extends HttpServlet {
             User admin = (User) req.getSession().getAttribute("sessionUser");
             String changedMsg = user.getChangedFields(prevUser);
             if(!changedMsg.equals("")){
-                userHistoryDao.createUserHistory(new UserHistory(user, "User Edit",changedMsg + " by admin ("+admin.getUsername()+")"));
+                userHistoryDao.createUserHistory(new UserHistory(user, "User Edit",changedMsg + " by admin("+admin.getUsername()+")"));
                 userHistoryDao.createUserHistory(new UserHistory(
                         admin,
                         "User Edit",
@@ -255,11 +268,75 @@ public class AdminController extends HttpServlet {
             }
             return;
         }
-        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/dashboard/userForm.jsp");
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/admin/userForm.jsp");
         req.setAttribute("pageTitle", "Edit User");
         req.setAttribute("formType","Edit");
         req.setAttribute("initialValues", user);
         req.setAttribute("errors", errors);
         dispatcher.forward(req,resp);
+    }
+    
+    private void showBlockUserPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException{
+        try{
+            int id = Integer.parseInt(req.getParameter("id"));
+            User user = userDao.getUserById(id);
+            if(user == null || user.isBlocked() || user.isAdmin()){
+                resp.sendRedirect(req.getContextPath()+"/admin/users");
+                return;
+            }
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/admin/blockUser.jsp");
+            req.setAttribute("pageTitle", "Block "+user.getUsername());
+            dispatcher.forward(req, resp);
+        }
+        catch(NumberFormatException ex ){
+            resp.sendRedirect(req.getContextPath()+"/admin/users");
+        }
+    }
+    private void blockUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException{
+         try{
+            int id = Integer.parseInt(req.getParameter("id"));
+            User user = userDao.getUserById(id);
+            if(user == null || user.isBlocked() || user.isAdmin()){
+                resp.sendRedirect(req.getContextPath()+"/admin");
+                return;
+            }
+            String reason = req.getParameter("reason");
+            if(reason.equals("")){
+                RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/admin/blockUser.jsp");
+                req.setAttribute("pageTitle", "Block " + user.getUsername());
+                req.setAttribute("error", "Reason is required");
+                req.setAttribute("initialValue", reason);
+                dispatcher.forward(req, resp);
+                return;
+            }
+            User admin = (User) req.getSession().getAttribute("sessionUser");
+            userDao.blockUser(id, admin.getId(), reason);
+            userHistoryDao.createUserHistory(new UserHistory(admin, "User block", "Admin blocked user("+user.getUsername()+") for "+reason));
+            userHistoryDao.createUserHistory(new UserHistory(user, "Block","User was blocked by an admin for "+reason));
+            Toast toast = new Toast("User was blocked", Toast.MSG_TYPE_SUCCESS);
+            toast.show(req);
+            resp.sendRedirect(req.getContextPath()+"/admin/users");
+        }
+        catch(NumberFormatException ex ){
+            resp.sendRedirect(req.getContextPath()+"/admin/users");
+        }
+    }
+    private void unblockUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException{
+         try{
+            int id = Integer.parseInt(req.getParameter("id"));
+            User user = userDao.getUserById(id);
+            if(user == null || !user.isBlocked() || user.isAdmin()){
+                resp.sendRedirect(req.getContextPath()+"/admin");
+                return;
+            }
+            User admin = (User) req.getSession().getAttribute("sessionUser");
+            userDao.unblockUser(id);
+            userHistoryDao.createUserHistory(new UserHistory(admin, "User Unblock", "Admin unblocked user("+user.getUsername()+")"));
+            userHistoryDao.createUserHistory(new UserHistory(user, "Unblock","User was unblocked by an admin"));
+            resp.sendRedirect(req.getContextPath()+"/admin/users");
+        }
+        catch(NumberFormatException ex ){
+            resp.sendRedirect(req.getContextPath()+"/admin/users");
+        }
     }
 }

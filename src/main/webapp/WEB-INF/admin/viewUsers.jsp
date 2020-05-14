@@ -47,7 +47,20 @@
                                                 class="btn btn-sm btn-warning">
                                                 <i class="fa fa-edit"></i> Edit
                                             </a>
-                                            <a href="#" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i> Block</a>
+                                            <c:if test="${user.isBlocked()}">
+                                                <form method="POST" action="${pageContext.request.contextPath}/admin/unblockUser" style="display:inline">
+                                                    <input type="hidden" name="id" value="${user.getId()}"> 
+                                                    <button type="submit" class="btn btn-sm btn-success"><i class="fa fa-unlock"></i> Unblock</button>
+                                                </form>
+                                            </c:if>
+                                            <c:if test="${!user.isBlocked()}">
+                                                    <a 
+                                                       href="${pageContext.request.contextPath}/admin/blockUser?id=${user.getId()}"
+                                                       class="btn btn-sm btn-danger"
+                                                    >
+                                                        <i class="fa fa-ban"></i> Block
+                                                    </a>
+                                            </c:if>
                                         </c:if>
                                     </td>
                                 </tr>

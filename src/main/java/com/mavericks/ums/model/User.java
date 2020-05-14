@@ -23,13 +23,14 @@ public class User {
     private String role = "user";
     private Timestamp joinedDate;
     private String phoneNum;
+    private boolean isBlocked;
 
     public User(int id) {
         this.id = id;
     }
 
     
-    public User(int id, String username, String password, String email,String firstName,String lastName,String role, Timestamp joinedDate, String phoneNum) {
+    public User(int id, String username, String password, String email,String firstName,String lastName,String role, Timestamp joinedDate, String phoneNum,boolean isBlocked) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -39,6 +40,7 @@ public class User {
         this.role = role;
         this.joinedDate = joinedDate;
         this.phoneNum = phoneNum;
+        this.isBlocked = isBlocked;
     }
 
     public User(String username, String password, String email, String firstName, String lastName, String phoneNum) {
@@ -134,6 +136,14 @@ public class User {
     public String getFullName(){
         return this.getFirstName()+ " "+ this.getLastName();
     }
+
+    public boolean isBlocked() {
+        return isBlocked;
+    }
+
+    public void setIsBlocked(boolean isBlocked) {
+        this.isBlocked = isBlocked;
+    }
     
     public String getChangedFields(User prevState){
        List<String> changedMessages = new ArrayList<>();
@@ -149,7 +159,7 @@ public class User {
        if(!this.getPassword().equals(prevState.getPassword())){
            changedMessages.add("password changed");
        }
-       if(this.getPhoneNum().equals(prevState.getPhoneNum())){
+       if(!this.getPhoneNum().equals(prevState.getPhoneNum())){
            changedMessages.add("phone number changed from "+ prevState.getPhoneNum() + " to "+ this.getPhoneNum());
        }
        StringBuilder buff = new StringBuilder();
@@ -168,6 +178,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" + "id=" + id + ", username=" + username + ", password=" + password + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName + ", role=" + role + ", joinedDate=" + joinedDate + ", phoneNum=" + phoneNum + '}';
+        return "User{" + "id=" + id + ", username=" + username + ", password=" + password + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName + ", role=" + role + ", joinedDate=" + joinedDate + ", phoneNum=" + phoneNum + ", isBlocked=" + isBlocked + '}';
     }
 }

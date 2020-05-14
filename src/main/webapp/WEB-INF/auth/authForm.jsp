@@ -15,14 +15,14 @@
                     <label>Username</label>
                     <input type="text" name="username" class='form-control ${(errors.containsKey("username"))?"is-invalid":""}' value="${initialValues.getUsername()}" required>
                     <c:if test='${errors.containsKey("username")}'>
-                            <small class="text-danger">${errors.get("username")}</small>
+                        <small class="text-danger">${errors.get("username")}</small>
                     </c:if>
                 </div>   
                 <div class="form-group">
                     <label>Password</label>
                     <input type="password" name="password" class="form-control ${errors.containsKey("password")?"is-invalid":""}"  value="${initialValues.getPassword()}" required>
                     <c:if test='${errors.containsKey("password")}'>
-                            <small class="text-danger">${errors.get("password")}</small>
+                        <small class="text-danger">${errors.get("password")}</small>
                     </c:if>
                 </div>
 
@@ -54,8 +54,13 @@
                         <label>Phone number</label>
                         <input type="text" name="phoneNum" class="form-control ${errors.containsKey("phoneNum")?"is-invalid":""}"  value="${initialValues.getPhoneNum()}" required>
                         <c:if test='${errors.containsKey("phoneNum")}'>
-                                <small class="text-danger">${errors.get("phoneNum")}</small>
+                            <small class="text-danger">${errors.get("phoneNum")}</small>
                         </c:if>
+                    </div>
+                </c:if>
+                <c:if test='${formType.equals("Login")}'>
+                    <div class="text-right" style="font-size:75%;">
+                        <a href="${pageContext.request.contextPath}/forgotPassword" class="text-dark">Forgot password?</a>
                     </div>
                 </c:if>
                 <div class="text-center">

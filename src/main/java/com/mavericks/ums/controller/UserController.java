@@ -32,21 +32,51 @@ import javax.servlet.http.HttpServletResponse;
 public class UserController extends HttpServlet {
     private final UserDao userDao = new UserDao();
     private final UserHistoryDao userHistoryDao = new UserHistoryDao();
-    
+
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String method = req.getMethod();
         User user = (User) req.getSession().getAttribute("sessionUser");
         if(user == null){
             resp.sendRedirect(req.getContextPath()+"/login");
             return;
         }
+        if(user.isBlocked()){
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/user/blocked.jsp");
+            try{
+                String blockedMsg = userDao.getBlockedMsg(user.getId());
+                req.setAttribute("blockedMsg", blockedMsg);
+            }
+            catch(SQLException ex){
+                ex.printStackTrace();
+            }
+            req.setAttribute("pageTitle", "You are blocked");
+            dispatcher.forward(req, resp);
+            return;
+        }
+        if (method.equals("GET")) {
+            doGet(req, resp);
+        } else if (method.equals("POST")) {
+            doPost(req, resp);
+        } else {
+            super.service(req, resp);
+        }
+    }
+    
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getServletPath();
-        switch(path){
-            case "/profile":
-                showProfilePage(req, resp);
-                break;
-            case "/profile/edit":
-                showEditProfilePage(req,resp);
+        try{
+            switch(path){
+                case "/profile":
+                    showProfilePage(req, resp);
+                    break;
+                case "/profile/edit":
+                    showEditProfilePage(req,resp);
+            }
+        }
+        catch(SQLException ex){
+            ex.printStackTrace();
         }
     }
 
@@ -54,9 +84,9 @@ public class UserController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getServletPath();
         try{
-            switch(path){
+            switch (path) {
                 case "/profile/edit":
-                    editProfile(req,resp);
+                    editProfile(req, resp);
                     break;
                 default:
                     super.doPost(req, resp);
@@ -68,7 +98,7 @@ public class UserController extends HttpServlet {
     }
     
     
-    private void showProfilePage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+    private void showProfilePage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException{
         try{
             int userId = Integer.parseInt(req.getParameter("id"));
             User sessionUser = (User) req.getSession().getAttribute("sessionUser");
@@ -95,9 +125,6 @@ public class UserController extends HttpServlet {
         }
         catch(NumberFormatException ex){
             resp.sendRedirect(req.getContextPath());
-        }
-        catch(SQLException ex){
-            ex.printStackTrace();
         }
     }
     

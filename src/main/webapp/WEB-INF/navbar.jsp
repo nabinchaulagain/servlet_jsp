@@ -46,4 +46,3 @@
         <%  session.removeAttribute("toast");%>
     </div>
 </c:if>
-

@@ -72,7 +72,7 @@
                         </div>
                     </c:if>
                     <div>
-                        <input type="checkbox" name="sendMail" value="yes" checked>Send the user an email
+                        <input type="checkbox" name="sendMail" value="yes" checked>Mail the user his credentials
                     </div>
                     <div class="text-center mt-2">
                         <input type="submit" class='btn btn-${formType.equals("Add")?"primary":"warning"}' value="${formType} User" >
