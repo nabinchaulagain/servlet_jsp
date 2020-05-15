@@ -157,6 +157,21 @@ public class UserDao {
         return rs.getString(1);
     }
     
+    public List<User> getUserListInInterval(String from,String to) throws SQLException{
+        List<User> users = new ArrayList<>();
+        PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM user WHERE joined_date BETWEEN ? AND ? ORDER BY joined_date DESC"
+        );
+        stmt.setString(1, from);
+        stmt.setString(2, to);
+        ResultSet rs = stmt.executeQuery();
+        while(rs.next()){
+            User user = getUserFromResultSet(rs);
+            users.add(user);
+        }
+        return users;
+    }
+    
     private User getUserFromResultSet(ResultSet resSet) throws SQLException{
         User user = new User(
             resSet.getInt("id"),

@@ -11,9 +11,11 @@ import com.mavericks.ums.model.User;
 import com.mavericks.ums.model.UserHistory;
 import com.mavericks.ums.util.AuthValidator;
 import com.mavericks.ums.util.Mailer;
+import com.mavericks.ums.util.ReportValidator;
 import com.mavericks.ums.util.Toast;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -27,7 +29,15 @@ import javax.servlet.http.HttpSession;
  *
  * @author Acer
  */
-@WebServlet(name = "AdminController", urlPatterns = {"/admin", "/admin/users", "/admin/deleteUser","/admin/addUser","/admin/editUser","/admin/blockUser","/admin/unblockUser"})
+@WebServlet(name = "AdminController", urlPatterns = {
+    "/admin", 
+    "/admin/users",
+    "/admin/deleteUser",
+    "/admin/addUser","/admin/editUser",
+    "/admin/blockUser",
+    "/admin/unblockUser",
+    "/admin/reports"
+})
 public class AdminController extends HttpServlet {
     private final UserDao userDao = new UserDao();
     private final UserHistoryDao userHistoryDao = new UserHistoryDao();
@@ -73,6 +83,8 @@ public class AdminController extends HttpServlet {
                 case "/admin/blockUser":
                     showBlockUserPage(req, resp);
                     break;
+                case "/admin/reports":
+                    showReportsPage(req,resp);
                 default:
                     super.doGet(req, resp);
             }
@@ -321,6 +333,7 @@ public class AdminController extends HttpServlet {
             resp.sendRedirect(req.getContextPath()+"/admin/users");
         }
     }
+    
     private void unblockUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException{
          try{
             int id = Integer.parseInt(req.getParameter("id"));
@@ -338,5 +351,29 @@ public class AdminController extends HttpServlet {
         catch(NumberFormatException ex ){
             resp.sendRedirect(req.getContextPath()+"/admin/users");
         }
+    }
+    
+    private void showReportsPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException{
+        String startDate = req.getParameter("from");
+        String endDate  = req.getParameter("to");
+        List<User> users = null;
+        if((startDate == null || startDate.equals("")) && (endDate == null || endDate.equals(""))){
+            users = userDao.getUserList();
+        }
+        else{
+            Map<String,String> errors = ReportValidator.validate(startDate, endDate);
+            if(!errors.isEmpty()){
+                req.setAttribute("errors", errors);
+            }
+            else{
+                users = userDao.getUserListInInterval(startDate,endDate);
+            }
+        }
+        req.setAttribute("fromDate", startDate);
+        req.setAttribute("toDate", endDate);
+        req.setAttribute("users", users);
+        req.setAttribute("pageTitle", "Reports");
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/admin/reports.jsp");
+        dispatcher.forward(req,resp);
     }
 }

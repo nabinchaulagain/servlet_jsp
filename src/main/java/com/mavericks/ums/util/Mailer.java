@@ -100,7 +100,7 @@ public class Mailer{
     public static void sendCredentialsAfterUserEdit(User user,HttpServletRequest req){
         String mailContent = 
                 "<html>"+
-                    "<body>"+
+                "<body>"+
                            "<h2>Hello, "+user.getFullName()+"</h2>"+
                            "<p>Your account has been updated by an admin"+
                            "<br>Your new credentials are:</p>"+
