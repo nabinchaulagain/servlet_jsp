@@ -38,20 +38,23 @@ public class UserController extends HttpServlet {
         String method = req.getMethod();
         User user = (User) req.getSession().getAttribute("sessionUser");
         if(user == null){
-            resp.sendRedirect(req.getContextPath()+"/login");
+            resp.sendRedirect(req.getContextPath()+"/login");// redirect to login page if not logged in
             return;
         }
         if(user.isBlocked()){
+            // if user is blocked
             RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/user/blocked.jsp");
             try{
                 String blockedMsg = userDao.getBlockedMsg(user.getId());
                 req.setAttribute("blockedMsg", blockedMsg);
             }
-            catch(SQLException ex){
-                ex.printStackTrace();
+            catch(Exception ex){
+                RequestDispatcher dispatcherForErrorPage = req.getRequestDispatcher("/WEB-INF/500.html");
+                dispatcherForErrorPage.forward(req, resp);
+                return;
             }
             req.setAttribute("pageTitle", "You are blocked");
-            dispatcher.forward(req, resp);
+            dispatcher.forward(req, resp); // show blocked page with blocked msg
             return;
         }
         if (method.equals("GET")) {
@@ -59,7 +62,7 @@ public class UserController extends HttpServlet {
         } else if (method.equals("POST")) {
             doPost(req, resp);
         } else {
-            super.service(req, resp);
+            super.service(req, resp); // show 405(METHOD NOT SUPPORTED) error
         }
     }
     
@@ -73,10 +76,14 @@ public class UserController extends HttpServlet {
                     break;
                 case "/profile/edit":
                     showEditProfilePage(req,resp);
+                    break;
+                default:
+                    super.doGet(req, resp);
             }
         }
-        catch(SQLException ex){
-            ex.printStackTrace();
+        catch(Exception ex){
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/500.html");
+            dispatcher.forward(req, resp);
         }
     }
 
@@ -92,8 +99,9 @@ public class UserController extends HttpServlet {
                     super.doPost(req, resp);
             }
         }
-        catch(SQLException ex){
-            ex.printStackTrace();
+        catch(Exception ex){
+           RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/500.html");
+           dispatcher.forward(req, resp);
         }
     }
     
@@ -103,20 +111,21 @@ public class UserController extends HttpServlet {
             int userId = Integer.parseInt(req.getParameter("id"));
             User sessionUser = (User) req.getSession().getAttribute("sessionUser");
             if(!sessionUser.isAdmin() && sessionUser.getId() != userId){
+                // if user is not an admin or if a normal user is trying to access someone else's profile
                 resp.sendRedirect(req.getContextPath());
                 return;
             }
             User user = userDao.getUserById(userId);
             if(user == null){
-                resp.sendRedirect(req.getContextPath());
+                resp.sendRedirect(req.getContextPath());// if userId is not found in database redirect to homepage
                 return;
             }
             List<UserHistory> historyList = userHistoryDao.getUserHistoryListByUserId(userId);
             if(sessionUser.getId() == userId){
-                req.setAttribute("pageTitle","Your profile");
+                req.setAttribute("pageTitle","Your profile"); // set webpage title to 'Your Profile' is user is trying to access his profile
             }
             else{
-                req.setAttribute("pageTitle", user.getUsername()+"'s profile");
+                req.setAttribute("pageTitle", user.getUsername()+"'s profile"); // set webpage title to 'user's Profile' is admin is trying to access a user's profile
             }
             req.setAttribute("historyList", historyList);
             req.setAttribute("user", user);
@@ -146,10 +155,10 @@ public class UserController extends HttpServlet {
         );
         user.setId(prevUser.getId());
         user.setRole(prevUser.getRole());
-        Map<String, String> errors = AuthValidator.validateForEditUser(prevUser,user, userDao);
+        Map<String, String> errors = AuthValidator.validateForEditUser(prevUser,user, userDao); //get errors
         if (errors.isEmpty()) {
             userDao.editUser(user);
-            String changedMsg = user.getChangedFields(prevUser);
+            String changedMsg = user.getChangedFields(prevUser); // get changed fields of user
             if(!changedMsg.equals("")){
                 userHistoryDao.createUserHistory(new UserHistory(
                         user,

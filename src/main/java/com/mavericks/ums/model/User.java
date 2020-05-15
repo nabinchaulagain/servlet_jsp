@@ -144,6 +144,9 @@ public class User {
         this.isBlocked = isBlocked;
     }
     
+    /** get changed fields according to previous state of the user and current state
+     * @param prevState
+     * @return e**/
     public String getChangedFields(User prevState){
        List<String> changedMessages = new ArrayList<>();
        if(!this.getEmail().equals(prevState.getEmail())){

@@ -32,7 +32,6 @@ public class DBSingleton {
             return connection;
         } 
         catch (ClassNotFoundException | SQLException e) { 
-            e.printStackTrace(); 
         } 
         return null;
     }

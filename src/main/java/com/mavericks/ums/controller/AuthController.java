@@ -39,9 +39,10 @@ public class AuthController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String path = req.getServletPath();
+        String path = req.getServletPath(); // get path of request
         try {
             switch (path) {
+                // match path to appropriate method
                 case "/login":
                     showLoginPage(req, resp);
                     break;
@@ -57,17 +58,19 @@ public class AuthController extends HttpServlet {
                 default:
                     super.doGet(req, resp);
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+        } catch (Exception ex) {
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/500.html");
+            dispatcher.forward(req, resp);
         }
 
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String path = req.getServletPath();
+        String path = req.getServletPath();// get path of request
         try {
             switch (path) {
+                // match path to appropriate method
                 case "/login":
                     login(req, resp);
                     break;
@@ -86,8 +89,9 @@ public class AuthController extends HttpServlet {
                 default:
                     super.doPost(req, resp);
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+        } catch (Exception ex) {
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/500.html");
+            dispatcher.forward(req, resp);
         }
     }
 
@@ -107,8 +111,9 @@ public class AuthController extends HttpServlet {
                 req.getParameter("lastName"),
                 req.getParameter("phoneNum")
         );
-        Map<String, String> errors = AuthValidator.validateForRegister(user, userDao);
+        Map<String, String> errors = AuthValidator.validateForRegister(user, userDao); // get all errors
         if (errors.isEmpty()) {
+            //if no errors
             int id = userDao.createUser(user);
             user.setId(id);
             userHistoryDao.createUserHistory(new UserHistory(user, "Sign up", "User created his account."));
@@ -116,11 +121,11 @@ public class AuthController extends HttpServlet {
             session.setAttribute("sessionUser", user);
             Toast toast = new Toast("Account created successfully", Toast.MSG_TYPE_SUCCESS);
             toast.show(req);
-            resp.sendRedirect(req.getContextPath() + "/profile?id=" + user.getId());
+            resp.sendRedirect(req.getContextPath() + "/profile?id=" + user.getId()); // redirect user to his profile page
             return;
         }
-        req.setAttribute("initialValues", user);
-        req.setAttribute("errors", errors);
+        req.setAttribute("initialValues", user); // send previously entered values
+        req.setAttribute("errors", errors); // send errors
         showRegisterPage(req, resp);
     }
 
@@ -136,7 +141,7 @@ public class AuthController extends HttpServlet {
                 req.getParameter("username"),
                 req.getParameter("password")
         );
-        Map<String, String> errors = AuthValidator.validateForLogin(user, userDao);
+        Map<String, String> errors = AuthValidator.validateForLogin(user, userDao); // get errors
         if (errors.isEmpty()) {
             user = userDao.getUserByUsermame(user.getUsername());
             HttpSession session = req.getSession();
@@ -145,9 +150,9 @@ public class AuthController extends HttpServlet {
             Toast toast = new Toast("You are now logged in as " + user.getUsername(), Toast.MSG_TYPE_SUCCESS);
             toast.show(req);
             if (user.isAdmin()) {
-                resp.sendRedirect(req.getContextPath() + "/admin");
+                resp.sendRedirect(req.getContextPath() + "/admin"); // redirect to dashboard if user is admin
             } else {
-                resp.sendRedirect(req.getContextPath() + "/profile?id=" + user.getId());
+                resp.sendRedirect(req.getContextPath() + "/profile?id=" + user.getId());// redirect to dashboard if user is a regular user
             }
             return;
         }
@@ -160,7 +165,7 @@ public class AuthController extends HttpServlet {
         HttpSession session = req.getSession(false);
         User user = (User) session.getAttribute("sessionUser");
         userHistoryDao.createUserHistory(new UserHistory(user, "Logout", "User logged out of the application"));
-        session.invalidate();
+        session.invalidate(); // destroy session
         Toast toast = new Toast("You are now logged out", Toast.MSG_TYPE_SUCCESS);
         toast.show(req);
         resp.sendRedirect(req.getContextPath());
@@ -181,9 +186,9 @@ public class AuthController extends HttpServlet {
             showForgotPasswordPage(req, resp);
             return;
         }
-        String token = UUID.randomUUID().toString();
+        String token = UUID.randomUUID().toString(); // generate unique token for reset password
         userHistoryDao.createUserHistory(new UserHistory(user, "Password Change Request", "Request for password change was made by user"));
-        Mailer.sendToken(user, token, req);
+        Mailer.sendToken(user, token, req); // send email with reset link
         passwordResetDao.generateResetToken(new PasswordResetToken(token, user));
         Toast toast = new Toast("Please check your email. it might take a few seconds", Toast.MSG_TYPE_SUCCESS);
         toast.show(req);
@@ -194,9 +199,9 @@ public class AuthController extends HttpServlet {
         try {
             String token = req.getParameter("token");
             int userId = Integer.parseInt(req.getParameter("user_id"));
-            PasswordResetToken resetToken = passwordResetDao.getToken(userId);
+            PasswordResetToken resetToken = passwordResetDao.getToken(userId); // get token in database
             if (!resetToken.getToken().equals(token)) {
-                resp.sendRedirect(req.getContextPath());
+                resp.sendRedirect(req.getContextPath()); // redirect to homepage if token doesn't match token in database
                 return;
             }
             RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/auth/editPassword.jsp");
@@ -213,9 +218,9 @@ public class AuthController extends HttpServlet {
             String password = req.getParameter("password");
             String token = req.getParameter("token");
             int userId = Integer.parseInt(req.getParameter("user_id"));
-            PasswordResetToken resetToken = passwordResetDao.getToken(userId);
+            PasswordResetToken resetToken = passwordResetDao.getToken(userId);// get token in database
             if (!resetToken.getToken().equals(token)) {
-                resp.sendRedirect(req.getContextPath());
+                resp.sendRedirect(req.getContextPath());// redirect to homepage if token doesn't match token in database
                 return;
             }
             if(password.length() < 8){
@@ -225,8 +230,8 @@ public class AuthController extends HttpServlet {
                 dispatcher.forward(req, resp);
                 return;
             }
-            userDao.changePassword(password, userId);
-            passwordResetDao.deleteResetToken(userId);
+            userDao.changePassword(password, userId); // change user's password in database
+            passwordResetDao.deleteResetToken(userId);// delete token in database
             userHistoryDao.createUserHistory(
                     new UserHistory(
                             new User(userId), 
@@ -239,6 +244,7 @@ public class AuthController extends HttpServlet {
             resp.sendRedirect(req.getContextPath()+"/login");
         }
         catch (NumberFormatException | NullPointerException ex) {
+            // if invalid id or user doesn't exist in database
             ex.printStackTrace();
             resp.sendRedirect(req.getContextPath());
         }

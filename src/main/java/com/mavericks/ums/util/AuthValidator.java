@@ -22,10 +22,12 @@ public class AuthValidator {
         Map<String,String> errors = new HashMap<>();
         User existingUser = dao.getUserByUsermame(user.getUsername());
         if(existingUser == null){
-                errors.put("username","Username doesn't exist");
+            //if no user is found
+            errors.put("username","Username doesn't exist");
         }
         else{
             if(!existingUser.getPassword().equals(user.getPassword())){
+                // if user if found but password doesn't match
                 errors.put("password","Password didn't match");
             }
         }
@@ -39,8 +41,8 @@ public class AuthValidator {
         if(user.getPassword().length() < 8){
             errors.put("password","Password should be at least 8 characters length");
         }
-        Pattern validEmailPattern =  Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
-        Matcher emailMatcher = validEmailPattern.matcher(user.getEmail());
+        Pattern validEmailPattern =  Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$"); // valid email regex
+        Matcher emailMatcher = validEmailPattern.matcher(user.getEmail()); 
         if(!emailMatcher.matches()){
             errors.put("email","Email is in incorrect format");
         }
@@ -50,7 +52,7 @@ public class AuthValidator {
         if(user.getLastName().length() == 0){
             errors.put("lastName","Your last name is required");
         }
-        Pattern validPhonePattern =  Pattern.compile("^\\d{10}$");
+        Pattern validPhonePattern =  Pattern.compile("^\\d{10}$");// valid phone number regex
         Matcher phoneNumMatcher = validPhonePattern.matcher(user.getPhoneNum());
         if(! phoneNumMatcher.matches()){
             errors.put("phoneNum","Phone number is incorrect");
@@ -58,12 +60,14 @@ public class AuthValidator {
         if(!errors.containsKey("username")){
             User existingUser = dao.getUserByUsermame(user.getUsername());
             if(existingUser != null){
+                // if username already exists in database
                 errors.put("username","Username is already taken");
             }
         }
         if(!errors.containsKey("email")){
             User existingUser = dao.getUserByEmail(user.getEmail());
             if(existingUser != null){
+                // if email already exists in database
                 errors.put("email","Email is already registered");
             }
         }
@@ -77,7 +81,7 @@ public class AuthValidator {
         if(user.getPassword().length() < 8){
             errors.put("password","Password should be at least 8 characters length");
         }
-        Pattern validEmailPattern =  Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
+        Pattern validEmailPattern =  Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$"); // valid email regex
         Matcher emailMatcher = validEmailPattern.matcher(user.getEmail());
         if(!emailMatcher.matches()){
             errors.put("email","Email is in incorrect format");
@@ -88,18 +92,20 @@ public class AuthValidator {
         if(user.getLastName().length() == 0){
             errors.put("lastName","Your last name is required");
         }
-        Pattern validPhonePattern =  Pattern.compile("^\\d{10}$");
+        Pattern validPhonePattern =  Pattern.compile("^\\d{10}$"); // valid phone number regex
         Matcher phoneNumMatcher = validPhonePattern.matcher(user.getPhoneNum());
         if(!phoneNumMatcher.matches()){
             errors.put("phoneNum","Phone number is incorrect");
         }
         if(!errors.containsKey("username")){
+            //if username already exists in database
             User existingUser = dao.getUserByUsermame(user.getUsername());
             if(existingUser != null && !existingUser.getUsername().equals(userPrev.getUsername())){
                 errors.put("username","Username is already taken by another user");
             }
         }
         if(!errors.containsKey("email")){
+            // if email already exists in database
             User existingUser = dao.getUserByEmail(user.getEmail());
             if(existingUser != null && !existingUser.getEmail().equals(userPrev.getEmail())){
                 errors.put("email","Email is already registered for another user");

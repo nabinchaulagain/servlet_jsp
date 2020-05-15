@@ -84,7 +84,7 @@ public class Mailer{
                                     "<a href='"+ getBaseUrl(req) +"/login' style='text-decoration:none;color:black'>Login Here</a>"+
                             "</button>"+
                     "</body>"+
-                 "</html>";
+                 "</html>"; 
         try {
             sendMail(user.getEmail(),"Account created",mailContent);
         } catch (MessagingException | GeneralSecurityException ex) {

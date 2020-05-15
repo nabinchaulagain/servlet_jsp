@@ -45,9 +45,10 @@ public class AdminController extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        User sessionUser = (User)session.getAttribute("sessionUser");
+        User sessionUser = (User)session.getAttribute("sessionUser");// getting user saved in the session
         if(sessionUser == null || !sessionUser.isAdmin()){
-            resp.sendRedirect(req.getContextPath()+"/login");
+            // redirect to home page if trying to access any of the admin routes
+            resp.sendRedirect(req.getContextPath());
             return;
         }
         String method = req.getMethod();
@@ -58,12 +59,16 @@ public class AdminController extends HttpServlet {
         else if(method.equals("POST")){
             doPost(req,resp);
         }
+        else{
+            super.service(req, resp); // show 405(METHOD NOT SUPPORTED) error
+        }
     }
     
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         String path = req.getServletPath();
         try{
+            // decide which method to call based on route
             switch(path) {
                 case "/admin":
                     showDashboardPage(req, resp);
@@ -89,8 +94,9 @@ public class AdminController extends HttpServlet {
                     super.doGet(req, resp);
             }
         }
-        catch(SQLException ex){
-            ex.printStackTrace();
+        catch(Exception ex){
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/500.html");
+            dispatcher.forward(req, resp);
         }
     }
 
@@ -99,6 +105,7 @@ public class AdminController extends HttpServlet {
         String path = req.getServletPath();
         try{
             switch(path) {
+                // decide which method to call based on route
                 case "/admin/addUser":
                     addUser(req, resp);
                     break;
@@ -118,8 +125,9 @@ public class AdminController extends HttpServlet {
                     super.doPost(req, resp);
             }
         }
-        catch(SQLException ex){
-            ex.printStackTrace();
+        catch(Exception ex){
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/500.html");
+            dispatcher.forward(req, resp);
         }
     }
     
@@ -143,6 +151,7 @@ public class AdminController extends HttpServlet {
             int id = Integer.parseInt(req.getParameter("id"));
             User user = userDao.getUserById(id);
             if(user == null || user.isAdmin()){
+                // redirect to user list page if user to be deleted doesn't exist or if he is an admin
                 resp.sendRedirect(req.getContextPath()+"/admin/users");
                 return;
             }
@@ -160,20 +169,19 @@ public class AdminController extends HttpServlet {
             int id = Integer.parseInt(req.getParameter("id"));
             User user = userDao.getUserById(id);
             if(user == null || user.isAdmin()){
-                resp.sendRedirect(req.getContextPath()+"/admin/users");
+                resp.sendRedirect(req.getContextPath()+"/admin/users");// if user does not exist or if he is an admin redirect to users list page
                 return;
             }
-            boolean isDeleted = userDao.deleteUser(id);
-            if(isDeleted){
-                HttpSession session = req.getSession();
-                User sessionUser = (User) session.getAttribute("sessionUser");
-                userHistoryDao.createUserHistory(new UserHistory(sessionUser, "User Deletion", "Deleted user with username " + user.getUsername()));
-            }
+            userDao.deleteUser(id); // delete user from database
+            HttpSession session = req.getSession();
+            User sessionUser = (User) session.getAttribute("sessionUser");
+            userHistoryDao.createUserHistory(new UserHistory(sessionUser, "User Deletion", "Deleted user with username " + user.getUsername()));
             Toast toast = new Toast("User deleted successfully", Toast.MSG_TYPE_SUCCESS);
             toast.show(req);
             resp.sendRedirect(req.getContextPath()+"/admin/users");
         }
         catch(NumberFormatException ex){
+            // catch when user's id is not a number
             resp.sendRedirect(req.getContextPath()+"/admin");
         }
     }
@@ -194,8 +202,9 @@ public class AdminController extends HttpServlet {
                 req.getParameter("phoneNum")
         );
         user.setRole(req.getParameter("role"));
-        Map<String, String> errors = AuthValidator.validateForRegister(user, userDao);
+        Map<String, String> errors = AuthValidator.validateForRegister(user, userDao); //get errors from authValidator class
         if (errors.isEmpty()) {
+            //if no errors
             int id = userDao.createUser(user);
             user.setId(id);
             User admin = (User) req.getSession().getAttribute("sessionUser");
@@ -209,6 +218,7 @@ public class AdminController extends HttpServlet {
             toast.show(req);
             resp.sendRedirect(req.getContextPath()+"/admin/users");
             if(req.getParameter("sendMail") !=  null){
+                //if user has checked the send mail checkbox
                 Mailer.sendCredentialsAfterUserAdd(user, req);
             }
             return;
@@ -232,6 +242,7 @@ public class AdminController extends HttpServlet {
             dispatcher.forward(req,resp);
         }
         catch(NumberFormatException ex){
+            // catch when user's id is not a number
             resp.sendRedirect(req.getContextPath()+"/admin");
         }
     }
@@ -248,7 +259,9 @@ public class AdminController extends HttpServlet {
             }
         }
         catch (NumberFormatException ex){
+            // catch when user's id is not a number
             resp.sendRedirect(req.getContextPath()+"/admin");
+            return;
         }
         User user = new User(
                 req.getParameter("username"),
@@ -264,8 +277,9 @@ public class AdminController extends HttpServlet {
         if (errors.isEmpty()) {
             userDao.editUser(user);
             User admin = (User) req.getSession().getAttribute("sessionUser");
-            String changedMsg = user.getChangedFields(prevUser);
+            String changedMsg = user.getChangedFields(prevUser);// get change in user information 
             if(!changedMsg.equals("")){
+                //if nothing is changed
                 userHistoryDao.createUserHistory(new UserHistory(user, "User Edit",changedMsg + " by admin("+admin.getUsername()+")"));
                 userHistoryDao.createUserHistory(new UserHistory(
                         admin,
@@ -277,7 +291,7 @@ public class AdminController extends HttpServlet {
             toast.show(req);
             resp.sendRedirect(req.getContextPath() + "/admin/users");
             if(req.getParameter("sendMail") !=  null){
-                Mailer.sendCredentialsAfterUserEdit(user, req);
+                Mailer.sendCredentialsAfterUserEdit(user, req); // mail user his credentials
             }
             return;
         }
@@ -294,6 +308,7 @@ public class AdminController extends HttpServlet {
             int id = Integer.parseInt(req.getParameter("id"));
             User user = userDao.getUserById(id);
             if(user == null || user.isBlocked() || user.isAdmin()){
+                // if user doesn't exist in database or if he is blocked or if he is an admin
                 resp.sendRedirect(req.getContextPath()+"/admin/users");
                 return;
             }
@@ -302,6 +317,7 @@ public class AdminController extends HttpServlet {
             dispatcher.forward(req, resp);
         }
         catch(NumberFormatException ex ){
+            // catch when user's id is not a number
             resp.sendRedirect(req.getContextPath()+"/admin/users");
         }
     }
@@ -310,6 +326,7 @@ public class AdminController extends HttpServlet {
             int id = Integer.parseInt(req.getParameter("id"));
             User user = userDao.getUserById(id);
             if(user == null || user.isBlocked() || user.isAdmin()){
+                 // if user doesn't exist in database or if he is blocked or if he is an admin
                 resp.sendRedirect(req.getContextPath()+"/admin");
                 return;
             }
@@ -331,6 +348,7 @@ public class AdminController extends HttpServlet {
             resp.sendRedirect(req.getContextPath()+"/admin/users");
         }
         catch(NumberFormatException ex ){
+            // catch when user's id is not a number
             resp.sendRedirect(req.getContextPath()+"/admin/users");
         }
     }
@@ -359,15 +377,16 @@ public class AdminController extends HttpServlet {
         String endDate  = req.getParameter("to");
         List<User> users = null;
         if((startDate == null || startDate.equals("")) && (endDate == null || endDate.equals(""))){
+            //if user just clicked on reports page
             users = userDao.getUserList();
         }
         else{
-            Map<String,String> errors = ReportValidator.validate(startDate, endDate);
+            Map<String,String> errors = ReportValidator.validate(startDate, endDate); //get errors in date slection
             if(!errors.isEmpty()){
                 req.setAttribute("errors", errors);
             }
             else{
-                users = userDao.getUserListInInterval(startDate,endDate);
+                users = userDao.getUserListInInterval(startDate,endDate); // get users within provided date interval
             }
         }
         req.setAttribute("fromDate", startDate);
