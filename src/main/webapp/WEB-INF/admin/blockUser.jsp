@@ -15,8 +15,8 @@
                 <h4 class="card-title">${pageTitle}</h4>
                 <form method="POST" class="mb-2 mt-2">
                     <div >
-                        <label>Reason in detail</label>
-                        <textarea name="reason" class='form-control  ${error != null?"is-invalid":""}' rows="3">${intialValue}</textarea>
+                        <label>Reason in short</label>
+                        <textarea name="reason" class='form-control  ${error != null?"is-invalid":""}' rows="3" placeholder="e.g: breaking the rules">${intialValue}</textarea>
                         <c:if test='${error != null}'>
                             <small class="text-danger">${error}</small>
                         </c:if>

@@ -123,6 +123,15 @@ public class UserDao {
         return result;
     }
     
+    public int getBlockedUsers() throws SQLException{
+        PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM block_list");
+        ResultSet resSet = stmt.executeQuery();
+        resSet.next();
+        int result;
+        result = resSet.getInt(1);
+        return result;
+    }
+    
     public boolean changePassword(String password, int userId) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(
                 "UPDATE user SET password=? WHERE id = ?"

@@ -18,13 +18,13 @@
                     <div class="card">
                         <div class="card-body text-center">
                             <h5 class="card-title">Total Users</h5>
-                            <p class="card-text">${totalUser}</p>
+                            <p class="card-text">${totalUserCount}</p>
                         </div>
                     </div>
                     <div class="card">
                         <div class="card-body text-center">
                             <h4 class="card-title">Blocked Users</h4>
-                            <p class="card-text">1000</p>
+                            <p class="card-text">${blockedUserCount}</p>
                         </div>
                     </div>
                 </div>

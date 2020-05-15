@@ -126,7 +126,8 @@ public class AdminController extends HttpServlet {
     private void showDashboardPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/admin/dashboard.jsp");
         req.setAttribute("pageTitle", "Dashboard");
-        req.setAttribute("totalUser", userDao.getTotalUsers());
+        req.setAttribute("totalUserCount", userDao.getTotalUsers());
+        req.setAttribute("blockedUserCount",userDao.getBlockedUsers());
         dispatcher.forward(req, resp);
     }
 
