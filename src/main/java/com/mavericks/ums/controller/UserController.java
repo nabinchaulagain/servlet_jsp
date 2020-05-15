@@ -145,6 +145,7 @@ public class UserController extends HttpServlet {
                 req.getParameter("phoneNum")
         );
         user.setId(prevUser.getId());
+        user.setRole(prevUser.getRole());
         Map<String, String> errors = AuthValidator.validateForEditUser(prevUser,user, userDao);
         if (errors.isEmpty()) {
             userDao.editUser(user);

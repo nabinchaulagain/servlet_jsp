@@ -83,7 +83,6 @@ public class UserDao {
         ResultSet resSet = stmt.executeQuery();
         if(resSet.next()){
             User user = getUserFromResultSet(resSet);
-            user.setIsBlocked(resSet.getBoolean("isBlocked"));
             return user;
         }
         return null;
@@ -91,12 +90,13 @@ public class UserDao {
     
     public User getUserByUsermame(String username) throws SQLException{
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT * FROM user WHERE user.username=?"
+                "SELECT user.*,!isnull(block_list.id) AS isBlocked FROM user LEFT JOIN block_list ON user.id = block_list.user_id WHERE user.username=?"
         );
         stmt.setString(1, username);
         ResultSet resSet = stmt.executeQuery();
         if(resSet.next()){
             User user = getUserFromResultSet(resSet);
+            user.setIsBlocked(resSet.getBoolean("isBlocked"));
             return user;
         }
         return null;

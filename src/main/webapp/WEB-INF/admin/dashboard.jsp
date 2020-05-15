@@ -13,7 +13,6 @@
         <div id="page-content-wrapper">
             <div class="container-fluid">
                 <h1 class="my-4">Dashboard</h1>
-                <h2 class="my-4">Users</h2>
                 <div class="card-deck my-5 px-5">
                     <div class="card">
                         <div class="card-body text-center">
