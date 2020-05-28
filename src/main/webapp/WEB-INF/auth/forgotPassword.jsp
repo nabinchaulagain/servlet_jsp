@@ -13,7 +13,7 @@
             <div class="col-9 mx-auto">
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="text" name="email" class='form-control ${error != null?"is-invalid":""}' value="${initialValue}" required>
+                    <input type="email" name="email" class='form-control ${error != null?"is-invalid":""}' value="${initialValue}" required>
                     <c:if test='${error != null}'>
                             <small class="text-danger">${error}</small>
                     </c:if>

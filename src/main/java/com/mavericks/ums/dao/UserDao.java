@@ -7,6 +7,7 @@ package com.mavericks.ums.dao;
 
 import com.mavericks.ums.model.User;
 import com.mavericks.ums.util.DBSingleton;
+import com.mavericks.ums.util.Hasher;
 import com.mysql.jdbc.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,7 +15,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  *
@@ -31,7 +31,7 @@ public class UserDao {
         );
         stmt.setString(1,user.getUsername());
         stmt.setString(2, user.getEmail());
-        stmt.setString(3, user.getPassword());
+        stmt.setString(3, Hasher.hash(user.getPassword()));
         stmt.setLong(4, Long.parseLong(user.getPhoneNum()));
         stmt.setString(5,user.getRole());
         stmt.setString(6,user.getFirstName());
@@ -53,7 +53,7 @@ public class UserDao {
         );
         stmt.setString(1,user.getUsername());
         stmt.setString(2, user.getEmail());
-        stmt.setString(3, user.getPassword());
+        stmt.setString(3, Hasher.hash(user.getPassword()));
         stmt.setLong(4, Long.parseLong(user.getPhoneNum()));
         stmt.setString(5, user.getFirstName());
         stmt.setString(6, user.getLastName());
@@ -78,11 +78,11 @@ public class UserDao {
         PreparedStatement stmt = conn.prepareStatement(
                 "SELECT user.*,!isnull(block_list.id) AS isBlocked FROM user LEFT JOIN block_list ON user.id = block_list.user_id WHERE user.id=?"
         );
-        
         stmt.setInt(1, id);
         ResultSet resSet = stmt.executeQuery();
         if(resSet.next()){
             User user = getUserFromResultSet(resSet);
+            user.setIsBlocked(resSet.getBoolean("isBlocked"));
             return user;
         }
         return null;
@@ -136,7 +136,7 @@ public class UserDao {
         PreparedStatement stmt = conn.prepareStatement(
                 "UPDATE user SET password=? WHERE id = ?"
         );
-        stmt.setString(1, password);
+        stmt.setString(1, Hasher.hash(password));
         stmt.setInt(2, userId);
         boolean wasEdited = stmt.executeUpdate() == 1;
         return wasEdited;

@@ -125,7 +125,7 @@ public class Mailer{
                     "<body>"+
                            "<h2>Hello, "+user.getFullName()+"</h2>"+
                            "<p>You requested a password reset for your UMS account.Click on the link below to reset your password.</p>"+
-                           "<a href='"+ getBaseUrl(req) +"/resetPassword?token="+token+"&user_id="+user.getId()+"'>Reset Here</a>"+
+                           "<a href='"+ getBaseUrl(req) +"/resetPassword?token="+Hasher.hash(token)+"&user_id="+user.getId()+"'>Reset Here</a>"+
                            "<p>If this wasn't you, just ignore this.</p>"+
                     "</body>"+
                  "</html>";

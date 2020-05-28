@@ -90,6 +90,7 @@ public class AdminController extends HttpServlet {
                     break;
                 case "/admin/reports":
                     showReportsPage(req,resp);
+                    break;
                 default:
                     super.doGet(req, resp);
             }
@@ -358,6 +359,7 @@ public class AdminController extends HttpServlet {
             int id = Integer.parseInt(req.getParameter("id"));
             User user = userDao.getUserById(id);
             if(user == null || !user.isBlocked() || user.isAdmin()){
+                System.out.println(user.toString());
                 resp.sendRedirect(req.getContextPath()+"/admin");
                 return;
             }
@@ -368,6 +370,7 @@ public class AdminController extends HttpServlet {
             resp.sendRedirect(req.getContextPath()+"/admin/users");
         }
         catch(NumberFormatException ex ){
+            System.out.println(ex);
             resp.sendRedirect(req.getContextPath()+"/admin/users");
         }
     }

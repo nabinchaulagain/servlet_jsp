@@ -26,7 +26,7 @@ public class AuthValidator {
             errors.put("username","Username doesn't exist");
         }
         else{
-            if(!existingUser.getPassword().equals(user.getPassword())){
+            if(!Hasher.check(user.getPassword(), existingUser.getPassword())){
                 // if user if found but password doesn't match
                 errors.put("password","Password didn't match");
             }

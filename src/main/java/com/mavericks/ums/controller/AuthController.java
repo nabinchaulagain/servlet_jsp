@@ -12,6 +12,7 @@ import com.mavericks.ums.model.PasswordResetToken;
 import com.mavericks.ums.model.User;
 import com.mavericks.ums.model.UserHistory;
 import com.mavericks.ums.util.AuthValidator;
+import com.mavericks.ums.util.Hasher;
 import com.mavericks.ums.util.Mailer;
 import com.mavericks.ums.util.Toast;
 import java.io.IOException;
@@ -40,6 +41,11 @@ public class AuthController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getServletPath(); // get path of request
+        User sessionUser  =(User) req.getSession().getAttribute("sessionUser");
+        if(sessionUser != null){
+            resp.sendRedirect(req.getContextPath());
+            return;
+        }
         try {
             switch (path) {
                 // match path to appropriate method
@@ -200,7 +206,7 @@ public class AuthController extends HttpServlet {
             String token = req.getParameter("token");
             int userId = Integer.parseInt(req.getParameter("user_id"));
             PasswordResetToken resetToken = passwordResetDao.getToken(userId); // get token in database
-            if (!resetToken.getToken().equals(token)) {
+            if (!Hasher.check(resetToken.getToken(),token)) {
                 resp.sendRedirect(req.getContextPath()); // redirect to homepage if token doesn't match token in database
                 return;
             }
@@ -219,7 +225,7 @@ public class AuthController extends HttpServlet {
             String token = req.getParameter("token");
             int userId = Integer.parseInt(req.getParameter("user_id"));
             PasswordResetToken resetToken = passwordResetDao.getToken(userId);// get token in database
-            if (!resetToken.getToken().equals(token)) {
+            if (!Hasher.check(resetToken.getToken(),token)) {
                 resp.sendRedirect(req.getContextPath());// redirect to homepage if token doesn't match token in database
                 return;
             }
