@@ -1,7 +1,12 @@
 package com.mavericks.ums.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,6 +37,18 @@ public class ReportValidator {
         }
         if(! errors.containsKey("to") && !toMatcher.matches()){
             errors.put("to","Invalid date");
+        }
+        if(!errors.isEmpty()){
+            return errors;
+        }
+        SimpleDateFormat sdformat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date d1 = sdformat.parse(from);
+            Date d2 = sdformat.parse(to);
+            if(d1.after(d2)){
+                errors.put("from", "Invalid range");
+            }
+        } catch (ParseException ex) {
         }
         return errors;
     }

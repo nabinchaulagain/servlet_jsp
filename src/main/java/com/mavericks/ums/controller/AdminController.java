@@ -41,7 +41,7 @@ import javax.servlet.http.HttpSession;
 public class AdminController extends HttpServlet {
     private final UserDao userDao = new UserDao();
     private final UserHistoryDao userHistoryDao = new UserHistoryDao();
-
+    //called when request is  made 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
@@ -64,6 +64,7 @@ public class AdminController extends HttpServlet {
         }
     }
     
+    //called when GET request is  made 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         String path = req.getServletPath();
@@ -100,7 +101,7 @@ public class AdminController extends HttpServlet {
             dispatcher.forward(req, resp);
         }
     }
-
+    //called when POST request is  made 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getServletPath();
@@ -132,6 +133,7 @@ public class AdminController extends HttpServlet {
         }
     }
     
+    //route handler for (GET => /admin) that shows dashboard page
     private void showDashboardPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/admin/dashboard.jsp");
         req.setAttribute("pageTitle", "Dashboard");
@@ -139,7 +141,8 @@ public class AdminController extends HttpServlet {
         req.setAttribute("blockedUserCount",userDao.getBlockedUsers());
         dispatcher.forward(req, resp);
     }
-
+    
+     //route handler for (GET => /admin/users) that shows dashboard page
     private void showViewUserPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/admin/viewUsers.jsp");
         req.setAttribute("pageTitle", "View Users");
@@ -147,6 +150,7 @@ public class AdminController extends HttpServlet {
         dispatcher.forward(req, resp);
     }
     
+     //route handler for (GET => /admin/deleteUser) that shows prompt page for deleting user
     private void showDeleteUserPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException{
         try{
             int id = Integer.parseInt(req.getParameter("id"));
@@ -164,7 +168,8 @@ public class AdminController extends HttpServlet {
             resp.sendRedirect(req.getContextPath()+"/admin");
         }
     }
-
+    
+    // route handler for (POST => /admin/deleteUser) that deletes user from database
     private void deleteUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         try{
             int id = Integer.parseInt(req.getParameter("id"));
@@ -186,6 +191,8 @@ public class AdminController extends HttpServlet {
             resp.sendRedirect(req.getContextPath()+"/admin");
         }
     }
+    
+    // route handler for (GET => /admin/addUser) that shows add user form
     private void showAddUserPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/admin/userForm.jsp");
         req.setAttribute("pageTitle", "Add User");
@@ -193,6 +200,7 @@ public class AdminController extends HttpServlet {
         dispatcher.forward(req,resp);          
     }
     
+    // route handler for (POST => /admin/adminUser) that adds user to database
     private void addUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException{
         User user = new User(
                 req.getParameter("username"),
@@ -228,6 +236,8 @@ public class AdminController extends HttpServlet {
         req.setAttribute("errors", errors);
         showAddUserPage(req, resp);
     }
+    
+    // route handler for (GET => /admin/editUser) that shows edit user form
     private void showEditUserPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException{
         try{    
             int id = Integer.parseInt(req.getParameter("id"));
@@ -248,6 +258,7 @@ public class AdminController extends HttpServlet {
         }
     }
     
+    // route handler for (POST => /admin/editUser) that edits user in database
     private void editUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException{
         int id = -1;
         User prevUser = null;
@@ -304,6 +315,7 @@ public class AdminController extends HttpServlet {
         dispatcher.forward(req,resp);
     }
     
+    // route handler for (GET => /admin/unblockUser) that shows user block form
     private void showBlockUserPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException{
         try{
             int id = Integer.parseInt(req.getParameter("id"));
@@ -322,6 +334,8 @@ public class AdminController extends HttpServlet {
             resp.sendRedirect(req.getContextPath()+"/admin/users");
         }
     }
+    
+    // route handler for (POST => /admin/unblock) that blocks user
     private void blockUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException{
          try{
             int id = Integer.parseInt(req.getParameter("id"));
@@ -354,6 +368,7 @@ public class AdminController extends HttpServlet {
         }
     }
     
+    // route handler for (POST => /admin/unblockUser) that unblocks user
     private void unblockUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException{
          try{
             int id = Integer.parseInt(req.getParameter("id"));
@@ -375,6 +390,7 @@ public class AdminController extends HttpServlet {
         }
     }
     
+    // route handler for (GET => /admin/reports) that shows lists of user in interval
     private void showReportsPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException{
         String startDate = req.getParameter("from");
         String endDate  = req.getParameter("to");
@@ -384,7 +400,7 @@ public class AdminController extends HttpServlet {
             users = userDao.getUserList();
         }
         else{
-            Map<String,String> errors = ReportValidator.validate(startDate, endDate); //get errors in date slection
+            Map<String,String> errors = ReportValidator.validate(startDate, endDate); //get errors in date selection
             if(!errors.isEmpty()){
                 req.setAttribute("errors", errors);
             }
