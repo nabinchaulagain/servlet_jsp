@@ -21,6 +21,8 @@ import java.util.regex.Pattern;
  * @author nabin
  */
 public class ReportValidator {
+    
+    // return map of errors for report date interval
     public static Map<String,String> validate(String from, String to){
         Map<String,String> errors = new HashMap<>();
         if(from.length() == 0){

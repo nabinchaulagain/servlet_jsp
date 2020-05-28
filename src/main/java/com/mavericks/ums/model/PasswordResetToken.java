@@ -21,7 +21,7 @@ public class PasswordResetToken {
         this.requestedTime = requestedTime;
         this.user = user;
     }
-
+    
     public PasswordResetToken(String token, User user) {
         this.token = token;
         this.user = user;

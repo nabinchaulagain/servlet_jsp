@@ -24,6 +24,7 @@ public class UserHistoryDao {
     Connection conn = DBSingleton.getConnection();
     private final UserDao userDao = new UserDao();
     
+    // create record in user history table
     public int createUserHistory(UserHistory userHistory) throws SQLException {        
         PreparedStatement stmt = conn.prepareStatement(
                 "INSERT INTO user_history(user_id, action, detail) VALUES (?,?,?)",
@@ -37,12 +38,16 @@ public class UserHistoryDao {
         resSet.next();
         return resSet.getInt(1);
     }
+    
+    // delete record in user history table
     public boolean deleteUserHistory(int id) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM user_history WHERE id=?");
         stmt.setInt(1, id);
         boolean wasDeleted = stmt.executeUpdate() == 1;
         return wasDeleted;
     }
+    
+    // edit record in user history table
     public boolean editUserHistory(UserHistory userHistory) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(
                 "UPDATE user_history SET user_id=?,action=?,detail=? WHERE id = ?"
@@ -54,6 +59,8 @@ public class UserHistoryDao {
         boolean wasEdited = stmt.executeUpdate() == 1;
         return wasEdited;
     }
+    
+    // get list of history events for user by his id in database
     public List<UserHistory> getUserHistoryListByUserId(int id) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM user_history WHERE user_id = ? ORDER BY date_and_time DESC");
         stmt.setInt(1,id);
@@ -65,12 +72,16 @@ public class UserHistoryDao {
         }
         return userhistories;
     }
+    
+    // delete user's history by his id
     public boolean deleteUserHistoryByUserId(int id) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM user_history WHERE user_id = ?");
         stmt.setInt(1, id);
         boolean wasDeleted = stmt.executeUpdate() == 1;
         return wasDeleted;
     }
+    
+    // form UserHistory object from ResultSet object 
     private UserHistory getUserHistoryFromResultSet(ResultSet resSet) throws SQLException {
         UserHistory userHistory = new UserHistory(
                 resSet.getInt("id"),

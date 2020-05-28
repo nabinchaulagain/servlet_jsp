@@ -37,7 +37,8 @@ public class AuthController extends HttpServlet {
     private final UserDao userDao = new UserDao();
     private final UserHistoryDao userHistoryDao = new UserHistoryDao();
     private final PasswordResetTokenDao passwordResetDao = new PasswordResetTokenDao();
-
+    
+    //called when GET request is  made 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getServletPath(); // get path of request
@@ -71,6 +72,7 @@ public class AuthController extends HttpServlet {
 
     }
 
+    //called when POST request is  made 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getServletPath();// get path of request
@@ -100,7 +102,8 @@ public class AuthController extends HttpServlet {
             dispatcher.forward(req, resp);
         }
     }
-
+    
+    // route handler for (GET => /register) that shows signup form
     private void showRegisterPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/auth/authForm.jsp");
         req.setAttribute("formType", "Sign up");
@@ -108,6 +111,7 @@ public class AuthController extends HttpServlet {
         dispatcher.forward(req, resp);
     }
 
+    // route handler for (POST => /register) that registers user
     private void register(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         User user = new User(
                 req.getParameter("username"),
@@ -135,6 +139,7 @@ public class AuthController extends HttpServlet {
         showRegisterPage(req, resp);
     }
 
+    // route handler for (GET => /login) that shows login form
     private void showLoginPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/auth/authForm.jsp");
         req.setAttribute("formType", "Login");
@@ -142,6 +147,7 @@ public class AuthController extends HttpServlet {
         dispatcher.forward(req, resp);
     }
 
+    // route handler for (POST => /login) that logs user in
     private void login(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         User user = new User(
                 req.getParameter("username"),
@@ -166,7 +172,8 @@ public class AuthController extends HttpServlet {
         req.setAttribute("errors", errors);
         showLoginPage(req, resp);
     }
-
+    
+    // route handler for (POST => /logout) that logs user out
     private void logout(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         HttpSession session = req.getSession(false);
         User user = (User) session.getAttribute("sessionUser");
@@ -177,12 +184,14 @@ public class AuthController extends HttpServlet {
         resp.sendRedirect(req.getContextPath());
     }
 
+    // route handler for (GET => /forgotPassword) that shows forgot password form
     private void showForgotPasswordPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/auth/forgotPassword.jsp");
         req.setAttribute("pageTitle", "Forgot Password");
         dispatcher.forward(req, resp);
     }
-
+    
+    // route handler for (POST => /forgotPassword) that rends recovery email
     private void forgotPassword(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         String email = req.getParameter("email");
         User user = userDao.getUserByEmail(email);
@@ -200,7 +209,8 @@ public class AuthController extends HttpServlet {
         toast.show(req);
         resp.sendRedirect(req.getContextPath());
     }
-
+    
+    // route handler for (POST => /editPassword) that shows reset password form
     private void showResetPasswordPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         try {
             String token = req.getParameter("token");
@@ -219,6 +229,7 @@ public class AuthController extends HttpServlet {
 
     }
 
+    // route handler for (POST => /admin/editPassword) that resets user's password
     private void resetPassword(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException {
         try {
             String password = req.getParameter("password");

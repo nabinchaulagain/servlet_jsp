@@ -20,6 +20,7 @@ import java.sql.SQLException;
 public class PasswordResetTokenDao {
     Connection conn = DBSingleton.getConnection();
     
+    // create reset token for user in database
     public boolean generateResetToken(PasswordResetToken token) throws SQLException{
         deleteResetToken(token.getUser().getId());
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO password_reset(token,user_id) VALUES (?,?)");
@@ -29,6 +30,7 @@ public class PasswordResetTokenDao {
         return wasInserted;
     }
     
+    // delete token by user_id in database
     public boolean deleteResetToken(int userId) throws SQLException{
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM password_reset WHERE user_id=?");
         stmt.setInt(1, userId);
@@ -36,6 +38,7 @@ public class PasswordResetTokenDao {
         return wasDeleted;
     }
     
+    // get token by user_id in database
     public PasswordResetToken getToken(int userId) throws SQLException{
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM password_reset WHERE user_id=?");
         stmt.setInt(1, userId);

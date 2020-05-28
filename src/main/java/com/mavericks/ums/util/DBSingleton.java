@@ -15,6 +15,7 @@ import java.sql.SQLException;
  */
 public class DBSingleton {
     static Connection conn;
+    //get database connection object
     public static Connection getConnection(){
         if(conn == null){
             conn = connect();
@@ -22,6 +23,7 @@ public class DBSingleton {
         return conn;
     }
     
+    // returns fresh new connection to database
     private static Connection connect(){
         String url = "jdbc:mysql://localhost:3306/ums"; 
         String user = "root"; 

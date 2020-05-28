@@ -18,6 +18,8 @@ import java.util.regex.Pattern;
  * @author nabin
  */
 public class AuthValidator {
+    
+    // returns a map of errors when user tries to login
     public static Map<String,String> validateForLogin(User user,UserDao dao) throws SQLException{
         Map<String,String> errors = new HashMap<>();
         User existingUser = dao.getUserByUsermame(user.getUsername());
@@ -33,6 +35,8 @@ public class AuthValidator {
         }
         return errors;
     }
+    
+    // returns a map of errors when user tries to signup
     public static Map<String,String> validateForRegister(User user,UserDao dao) throws SQLException{
         Map<String,String> errors = new HashMap<>();
         if(user.getUsername().length() < 6){
@@ -73,6 +77,8 @@ public class AuthValidator {
         }
         return errors;
     }
+    
+    // returns a map of errors when edit user is done
     public static Map<String,String> validateForEditUser(User userPrev,User user,UserDao dao) throws SQLException{
         Map<String,String> errors = new HashMap<>();
         if(user.getUsername().length() < 6){

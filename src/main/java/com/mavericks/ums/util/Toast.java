@@ -22,6 +22,8 @@ public class Toast {
         this.message = message;
         this.type = type;
     }
+    
+    // set toast msg in token
     public void show(HttpServletRequest req){
         HttpSession session = req.getSession();
         session.setAttribute("toast", this);

@@ -12,12 +12,13 @@ import org.mindrot.jbcrypt.BCrypt;
  * @author nabin
  */
 public class Hasher {
-    
+    // hash a string
     public static String hash(String str) {
 	String salt = BCrypt.gensalt(12);
 	String hashedStr = BCrypt.hashpw(str, salt);
 	return hashedStr;
     }
+    // verify if a string matches a hash
     public static boolean check(String str, String hashedStr){ 
 	boolean password_verified = BCrypt.checkpw(str, hashedStr);
 	return password_verified;

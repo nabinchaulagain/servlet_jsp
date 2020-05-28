@@ -28,7 +28,8 @@ import javax.servlet.http.HttpServletRequest;
 public class Mailer{
     private static final String USERNAME = Secrets.USERNAME;
     private static final String PASSWORD = Secrets.PASSWORD;
-
+    
+    //send an email 
     private static void sendMail(final String toAddress,final String subject, final String message) throws AddressException, GeneralSecurityException {
         Runnable emailTask = new Runnable() {
             @Override
@@ -69,6 +70,7 @@ public class Mailer{
         emailThread.start();
     }
     
+    // send email with credentials after adding user
     public static void sendCredentialsAfterUserAdd(User user,HttpServletRequest req){
         String mailContent = 
                 "<html>"+
@@ -91,12 +93,16 @@ public class Mailer{
             ex.printStackTrace();
         }
     }
+    
+    // get url base path(e.g: http://localhost:8080/ums)
     private static String getBaseUrl(HttpServletRequest req){
         String scheme = req.getScheme() + "://";
         String serverName = req.getServerName();
         int serverPort = req.getServerPort();
         return scheme + serverName + ":" + serverPort + req.getContextPath();
     }
+    
+    // send email with credentials after editing user
     public static void sendCredentialsAfterUserEdit(User user,HttpServletRequest req){
         String mailContent = 
                 "<html>"+
@@ -119,6 +125,8 @@ public class Mailer{
            ex.printStackTrace();       
         }
     }
+    
+    // send email with reset link for reseting password
     public static void sendToken(User user,String token,HttpServletRequest req){
         String mailContent = 
                 "<html>"+

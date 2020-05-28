@@ -23,7 +23,7 @@ import java.util.List;
 public class UserDao {
     Connection conn = DBSingleton.getConnection();
     
-    // returns id of inserted user
+    // add user in database and return user's id
     public int createUser(User user) throws SQLException{
         PreparedStatement stmt = conn.prepareStatement(
                 "INSERT INTO user(username,email,password,phone_num,role,first_name,last_name) VALUES (?,?,?,?,?,?,?)",
@@ -41,12 +41,16 @@ public class UserDao {
         resSet.next();
         return resSet.getInt(1);
     }
+    
+    // delete user by id in database
     public boolean deleteUser(int id) throws SQLException{
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM user WHERE id=?");
         stmt.setInt(1, id);
         boolean wasDeleted = stmt.executeUpdate() == 1;
         return wasDeleted;
     }
+    
+    // edit user's information in database
     public boolean editUser(User user) throws SQLException{
         PreparedStatement stmt = conn.prepareStatement(
                 "UPDATE user SET username=?,email=?,password=?,phone_num=?,first_name=?,last_name=? WHERE id = ?"
@@ -61,6 +65,8 @@ public class UserDao {
         boolean wasEdited = stmt.executeUpdate() == 1;
         return wasEdited;
     }
+    
+    // get list of users in database
     public List<User> getUserList() throws SQLException{
         PreparedStatement stmt = conn.prepareStatement(
                 "SELECT  user.*,!isnull(block_list.id) AS isBlocked FROM user LEFT JOIN block_list ON user.id = block_list.user_id ORDER BY joined_date DESC"
@@ -74,6 +80,8 @@ public class UserDao {
         }
         return users;
     }
+    
+    // get user by id in database
     public User getUserById(int id) throws SQLException{
         PreparedStatement stmt = conn.prepareStatement(
                 "SELECT user.*,!isnull(block_list.id) AS isBlocked FROM user LEFT JOIN block_list ON user.id = block_list.user_id WHERE user.id=?"
@@ -88,6 +96,7 @@ public class UserDao {
         return null;
     }
     
+    // get user by username in database
     public User getUserByUsermame(String username) throws SQLException{
         PreparedStatement stmt = conn.prepareStatement(
                 "SELECT user.*,!isnull(block_list.id) AS isBlocked FROM user LEFT JOIN block_list ON user.id = block_list.user_id WHERE user.username=?"
@@ -101,6 +110,8 @@ public class UserDao {
         }
         return null;
     }
+    
+    // get user by email in database
     public User getUserByEmail(String email) throws SQLException{
         PreparedStatement stmt = conn.prepareStatement(
             "SELECT * FROM user WHERE user.email=?"
@@ -114,6 +125,7 @@ public class UserDao {
         return null;
     }
     
+    // get total count of users in database
     public int getTotalUsers() throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM user");
         ResultSet resSet = stmt.executeQuery();
@@ -123,6 +135,7 @@ public class UserDao {
         return result;
     }
     
+    //get total count of blocked users in database
     public int getBlockedUsers() throws SQLException{
         PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM block_list");
         ResultSet resSet = stmt.executeQuery();
@@ -132,6 +145,7 @@ public class UserDao {
         return result;
     }
     
+    //change user's password in database
     public boolean changePassword(String password, int userId) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(
                 "UPDATE user SET password=? WHERE id = ?"
@@ -142,6 +156,7 @@ public class UserDao {
         return wasEdited;
     }
     
+    //insert record in block_list table in database
     public boolean blockUser(int userId,int blockerId,String reason) throws SQLException{
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO block_list(user_id,blocker_id,reason) VALUES (?,?,?)");
         stmt.setInt(1,userId);
@@ -151,6 +166,7 @@ public class UserDao {
         return wasInserted;
     }
     
+    //delete record from block_list in database
     public boolean unblockUser(int userId) throws SQLException{
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM block_list WHERE user_id=?");
         stmt.setInt(1,userId);
@@ -158,6 +174,7 @@ public class UserDao {
         return wasDeleted;
     }
     
+    //get reason for why user is blocked 
     public String getBlockedMsg(int userId) throws SQLException{
         PreparedStatement stmt = conn.prepareStatement("SELECT reason FROM block_list WHERE user_id = ?");
         stmt.setInt(1,userId);
@@ -166,6 +183,7 @@ public class UserDao {
         return rs.getString(1);
     }
     
+    // get list of users in a date interval
     public List<User> getUserListInInterval(String from,String to) throws SQLException{
         List<User> users = new ArrayList<>();
         PreparedStatement stmt = conn.prepareStatement(
@@ -180,7 +198,7 @@ public class UserDao {
         }
         return users;
     }
-    
+    // form User object from ResultSet
     private User getUserFromResultSet(ResultSet resSet) throws SQLException{
         User user = new User(
             resSet.getInt("id"),

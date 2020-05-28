@@ -32,7 +32,8 @@ import javax.servlet.http.HttpServletResponse;
 public class UserController extends HttpServlet {
     private final UserDao userDao = new UserDao();
     private final UserHistoryDao userHistoryDao = new UserHistoryDao();
-
+    
+    //called when request is  made 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String method = req.getMethod();
@@ -66,6 +67,7 @@ public class UserController extends HttpServlet {
         }
     }
     
+    //called when GET request is  made 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getServletPath();
@@ -86,7 +88,8 @@ public class UserController extends HttpServlet {
             dispatcher.forward(req, resp);
         }
     }
-
+    
+    //called when POST request is  made 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getServletPath();
@@ -105,7 +108,7 @@ public class UserController extends HttpServlet {
         }
     }
     
-    
+    // route handler for (GET => /profile) that shows user's profile page
     private void showProfilePage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, SQLException{
         try{
             int userId = Integer.parseInt(req.getParameter("id"));
@@ -137,12 +140,15 @@ public class UserController extends HttpServlet {
         }
     }
     
+    // route handler for (GET => /profile/edit) that shows edit profile page
     private void showEditProfilePage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/user/editProfile.jsp");
         req.setAttribute("initialValues", req.getSession().getAttribute("sessionUser"));
         req.setAttribute("pageTitle","Edit Profile");
         dispatcher.forward(req, resp);
     }
+    
+    // route handler for (GET => /profile/edit) that shows edit profile form
     private void editProfile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException,SQLException{
          User prevUser = (User) req.getSession().getAttribute("sessionUser");
          User user = new User(
