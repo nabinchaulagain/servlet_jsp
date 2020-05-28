@@ -9,6 +9,6 @@
     </head>
     <body>
         <%@include file="../navbar.jsp" %>
-        <h3 class="jumbotron col-md-9 my-5 mx-auto">You have been blocked by an administrator for ${blockedMsg}</h3>
+        <h3 class="jumbotron col-md-9 my-5 mx-auto text-center">You have been blocked by an administrator for ${blockedMsg}</h3>
     </body>
 </html>

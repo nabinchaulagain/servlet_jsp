@@ -23,11 +23,11 @@
                     </div>   
                     <div class="form-group">
                         <label>Password</label>
-                        <input type="password" name="password" class="form-control ${errors.containsKey("password")?"is-invalid":""}" value="${initialValues.getPassword()}" required>
+                        <input type="password" name="password" class="form-control ${errors.containsKey("password")?"is-invalid":""}" required>
                         <c:if test='${errors.containsKey("password")}'>
                             <small class="text-danger">${errors.get("password")}</small>
                         </c:if>
-                    </div>
+                    </div>  
                     <div class="form-group">
                         <label>Email</label>
                         <input type="email" name="email" class="form-control ${errors.containsKey("email")?"is-invalid":""}" value="${initialValues.getEmail()}" required>
